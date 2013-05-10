@@ -11,13 +11,13 @@ package main;
  */
 public class Action {
 
-	private final Chat chat;
+	private final Chat chatts;
 	private final Client client;
 	private final String action;
 	private final String message;
 	
 	public Action(Chat chat, Client user, String action, String message) {
-		this.chat = chat;
+		this.chatts = chat;
 		this.client = user;
 		this.action = action;
 		this.message = message;
@@ -27,7 +27,7 @@ public class Action {
 	 * Getter Methods
 	 */
 	public Chat getChat() {
-		return chat;
+		return chatts;
 	}
 
 	public Client getClient() {
