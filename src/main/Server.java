@@ -1,6 +1,9 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
@@ -50,15 +53,33 @@ public class Server {
 	 * @param client - Client which will be disconnected from the server
 	 * @throws IOException
 	 */
-	public static void handleConnection(Client client) throws IOException {		
-		hashUsers.remove(client.getUsername());
-		updateClients();
-		ConcurrentHashMap<Chat, Conversation> conversations = client.getChatMap();
-		for (Chat chat : conversations.keySet()) {
-			processor.leaveConversation(chat, client);
-			conversations.get(chat).dispose();
-		}
-		client.getSocket().close();
+	public static void handleConnection(Socket socket) throws IOException {	
+		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), false);
+        
+        System.out.println(out);
+        
+        try {
+            for (String line =in.readLine(); line!=null; line=in.readLine()) {
+                String output = handleRequest(line);
+                if(output != null) {
+                    //Handling 'bye' command from the client
+                    if(output.equals("disconnected")){
+                        //When a person disconnects
+                    	return;
+                    }
+                    }
+                }
+        } finally {        
+            out.close();
+            in.close();
+
+        }
+
+	}
+	
+	public static void handleRequest(String input){
+		
 	}
 	
 	/**
