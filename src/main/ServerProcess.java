@@ -1,7 +1,9 @@
 package main;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,16 +21,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ServerProcess extends Thread {
 	
-	private static ConcurrentHashMap<Integer, Chat> hashChats = new ConcurrentHashMap<Integer, Chat>();
+	private static ConcurrentHashMap<String, Socket> hashUsers = new ConcurrentHashMap<String, Socket>();
+	private static ConcurrentHashMap<String, Chat> hashChats = new ConcurrentHashMap<String, Chat>();
 	private static AtomicInteger chatNumber = new AtomicInteger();
-	private final BlockingQueue<Action> queue;
-	private static List<String> publicChats = Collections.synchronizedList(new ArrayList<String>());
-	
+	private final BlockingQueue<Object[]> queue;
+
 	/**
 	 * Constructor method for ServerProcess. Instantiates the blocking queue.
 	 */
 	public ServerProcess() {
-		this.queue = new LinkedBlockingQueue<Action>();
+		this.queue = new LinkedBlockingQueue<Object[]>();
 	}
 	
 	@Override
@@ -37,177 +39,146 @@ public class ServerProcess extends Thread {
 	 * and runs the actions specified by the current action input.
 	 */
 	public void run() {
+		PrintWriter out = null;
+		try {
+			while (true) {
+				Object[] action = queue.take();
+				String[] tokens = ((String) action[0]).split(" ");
+				Socket socket = (Socket) action[1];
+				
+		        out = new PrintWriter(socket.getOutputStream(), true);
+				
+		        if (tokens[0].equals("username")) {
+		            if (!hashUsers.containsKey(tokens[1])) {
+		            	hashUsers.put(tokens[1], socket);
+		            	out.println("start " + getAllUsers() + " ? " + getAllChats());   
 
-		while (true) {
-			try {
-				Action action = queue.take();
-				
-				if (action.getAction().equals("invite")) {
-					if (notMember(action.getChat(), action.getClient().getUsername())) {
-						action.getChat().addMember(action.getClient());
-						action.getClient().newChat(action.getChat());
-						for (Client client: action.getChat().getMembers()) {
-							client.updateChatMembers(action.getChat());
-						}
+		            	Collection<Socket> sockets = hashUsers.values();
+		            	for (Socket subSocket: sockets) {
+					        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+					        subOut.println("connect " + tokens[1]);
+		            	}
+		            } else {
+		            	out.println("abort");
+		            }
+		        } else if (tokens[0].equals("new")) {
+		    		Chat chat = new Chat(chatNumber);
+		    		chatNumber.getAndIncrement();
+		    		chat.addMember(tokens[1]);
+		    		hashChats.put("" + chat.getID(), chat);	
+		    		out.println("new " + tokens[1] + " " + chat.getID());
+	            	Collection<Socket> sockets = hashUsers.values();
+	            	for (Socket subSocket: sockets) {
+				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+				        subOut.println("create " + chat.getID());
+	            	}
+		        } else if (tokens[0].equals("post")) {
+		        	System.out.println(tokens[tokens.length-1]);
+		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
+		        	System.out.println(chat);
+		        	Collection<String> members = chat.getMembers();
+		        	
+			        String message = "";
+			        for (int i = 2; i < tokens.length-1; i++) {
+			        	message += tokens[i] + " ";
+			        }
+			        
+		        	for (String member: members) {
+		        		Socket subSocket = hashUsers.get(member);
+				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+				        subOut.println("post " + tokens[1] + " " + message + " " + tokens[tokens.length-1]);
+		        	}
+		        	
+		        	chat.addHistory(tokens[1], message);
+		        } else if (tokens[0].equals("invite")) {
+		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
+
+		        	for (int i = 1; i < tokens.length-1; i++) {
+		        		String token = tokens[i].replace(",", "");
+
+		        		if (!hashUsers.containsKey(token))
+		        			continue;
+		        		
+		        		if (chat.isMember(token)) 
+		        			continue;
+		        		
+		        		Socket subSocket = hashUsers.get(token);
+		        		chat.addMember(token);
+		        		
+		        		String memberList = "";
+		        		Collection<String> members = chat.getMembers();
+			        	for (String member: members) {
+			        		memberList += member + " ";
+			        		if (!member.equals(token)) {
+				        		Socket theSocket = hashUsers.get(member);
+				        		PrintWriter theOut = new PrintWriter(theSocket.getOutputStream(), true);
+						        theOut.println("added " + token + " " + chat.getID());
+			        		}
+			        	}
+			        	
+			    		PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+				        subOut.println("new " + memberList + " ? " + chat.getHistoryString() + " " + chat.getID());
+		        	}
+		        } else if (tokens[0].equals("disconnect")) {
+		        	for (int i = 2; i < tokens.length; i++) {
+		        		Chat chat = hashChats.get(tokens[i]);
+		        		chat.removeMember(tokens[1]);
+			        	Collection<String> members = chat.getMembers();
+			        	for (String member: members) {
+			        		Socket subSocket = hashUsers.get(member);
+					        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+					        subOut.println("leave " + tokens[1] + " " + chat.getID());
+			        	}
+		        	}
+		        	Collection<Socket> sockets = hashUsers.values();
+		        	for (Socket subSocket: sockets) {
+				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+				        subOut.println("disconnect " + tokens[1]);
+		        	}
+		        	out.close();
+		        	socket.close();
+		        } else if (tokens[0].equals("leave")) {
+		        	Chat chat = hashChats.get(tokens[2]);
+					chat.removeMember(tokens[1]);
+
+					Collection<String> members = chat.getMembers();
+					for (String member: members) {
+						Socket subSocket = hashUsers.get(member);
+				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+				        subOut.println("leave " + tokens[1] + " " + tokens[2]);
 					}
-				} else if (action.getAction().equals("post")) {
-					for (Client client: action.getChat().getMembers()) {
-						client.newMessage(action.getChat(), action.getClient().getUsername(), action.getMessage());
-					}
-				} else if (action.getAction().equals("leave")) {
-					action.getChat().removeMember(action.getClient());
-					action.getClient().removeChat(action.getChat());
-					
-					if (action.getChat().getMemberCount() == 0){
-						hashChats.remove(action.getChat().getID());
-						publicChats.remove(String.valueOf(action.getChat().getID()));
-						action.getClient().getChatsUpdate();
-					} else {
-						for (Client client: action.getChat().getMembers()) {
-							client.updateChatMembers(action.getChat());
-						}
-					}
-				} else if (action.getAction().equals("newPublic")) {
-					addPublicChat(action.getClient());
-				} else if (action.getAction().equals("newPrivate")){
-					addPrivateChat(action.getClient());
-				}
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		        }
 			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Method used to add a chat to the ServerProcess. Instantiates the new chat, and
-	 * adds the chat to the ConcurrentHashMap<AtomicInteger, Chat> that keeps track of
-	 * each unique chat.
-	 * the ID is also added to publicChats list to keep track of all public chats
-	 * @param client - Client that sent the addChat command
-	 */
-	
-	public static void addPublicChat(Client client) {
-		Chat chat = new Chat(chatNumber);
-		chatNumber.getAndIncrement();
-		chat.addMember(client);
-		client.newChat(chat);
-		hashChats.put(chat.getID(), chat);	
-		publicChats.add(String.valueOf(chat.getID()));
-		client.getChatsUpdate();
+	public void addLine(String line, Socket socket) {
+		queue.offer(new Object[] {line, socket});
 	}
 	
-	/**
-	 * Similar to addPublicChat, except that the id of the conversation
-	 * is NOT added to publicChats, i.e. not all users can join private conversations
-	 * @param client
-	 */
-	public static void addPrivateChat(Client client) {
-		Chat chat = new Chat(chatNumber);
-		chatNumber.getAndIncrement();
-		chat.addMember(client);
-		client.newChat(chat);
-		hashChats.put(chat.getID(), chat);	
+	public String getAllUsers() {
+    	Collection<String> users = hashUsers.keySet();
+    	String userString = "";
+    	for (String user: users) {
+    		userString += user + " ";
+    	}
+    	return userString.trim();
+	}
+	
+	public String getAllChats() {
+		Collection<String> chats = hashChats.keySet();
+    	String chatString = "";
+    	for (String chat: chats) {
+    		chatString += chat + " ";
+    	}
+    	return chatString.trim();
 	}
 
-	/**
-	 * Method used to add the addPublicChat action to the queue.
-	 * @param client - Client that requested a new Chat
-	 */
-	public void newPublicChat(Client client) {
-		queue.offer(new Action(null, client, "newPublic", null));
-	}
-	
-	/**
-	 * Method used to add the addPrivateChat action to the queue.
-	 * @param client - Client that requested a new Chat
-	 */
-	public void newPrivateChat(Client client) {
-		queue.offer(new Action(null, client, "newPrivate", null));
-	}
-	
-	/**
-	 * Method used to invite new clients to a pre-existing chat.
-	 * <p>
-	 * Separates the string of users by commas, and iterates through the array
-	 * adding members that are not currently member of the chat to the chat.
-	 * @param chat - Chat to add clients in
-	 * @param users - name of all users to be added to chat
-	 */
-	public void invite(Chat chat, String users) {
-		String userString = users.replaceAll("\\s+", "");
-		String[] userArray = userString.split(",");
-		for (String user: userArray) {
-			if (notMember(chat, user)) {
-				Client client = Server.gethashUsers().get(user);
-				queue.offer(new Action(chat, client, "invite", null));
-			}
-		}
-	}
-	
-	/**
-	 * Method used to add the leave action to the queue and remove a client from a specified chat
-	 * @param chat - Chat for the client to be removed
-	 * @param client - Client to be removed form the specified chat
-	 */
-	public void leaveConversation(Chat chat, Client client) {
-		queue.offer(new Action(chat, client, "leave", null));
-	}
-	
-	/**
-	 * Method used to add the post method to a specified chat from a Client.
-	 * <p>
-	 * Updates the specified chat's messages by appending the client's username followed
-	 * by the message to the message text field.
-	 * @param chat - Chat to be updated
-	 * @param client - Client that sent the message
-	 * @param message - String representing the message
-	 */
-	public void sendMessage(Chat chat, Client client, String message) {
-		queue.offer(new Action(chat, client, "post", message));
-	}
-	
-	/**
-	 * Method used to check whether a client is a member of a specified chat.
-	 * @param chat - Chat to check whether the client is a member
-	 * @param user - String representing the Client's username
-	 * @return boolean - true if the user is not a member of the chat, false otherwise
-	 */
-	public boolean notMember(Chat chat, String user) {
-		Client client = Server.gethashUsers().get(user);
-		if (client != null)
-			return !chat.isMember(client);
-		return false;
-	}
-
-	/**
-	 * join takes idString to look up the chat and
-	 * invite user to that chat
-	 * @param idString
-	 * @param user
-	 */
-	public void join(String idString, String user) {
-		Chat chat = hashChats.get(Integer.parseInt(idString));
-		invite(chat, user);
-	}
-	
-	/**
-	 * Get publicChats (public conversations)
-	 * @return publicChats
-	 */
-	public List<String> getpublicChats(){
-		return publicChats;
-	}
-	
-	/**
-	 * gets called from AllUsersGUI when a chat room is selected
-	 * @param idString
-	 * @return String username of the creator of the chat room
-	 */
-	public String getCreator(String idString){
-		Chat currentChat = hashChats.get(Integer.parseInt(idString));
-		return currentChat.getMembers().get(0).getUsername();
-	}
 
 }
