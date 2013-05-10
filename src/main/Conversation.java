@@ -9,6 +9,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -57,11 +60,13 @@ public class Conversation extends JFrame{
     private JButton Invite;
     private JTextField InviteUsers; 
     
-    private final Client client;
-	private final Chat chat;	
+    private final ClientSide client;
+	private final String chat;	
+	private List<String> members;
 	
 	
-	public Conversation(final Chat chat, final Client client){
+	public Conversation(final String chat, final ClientSide client) {
+		this.members = new ArrayList<String>();
 		this.chat = chat;
 		this.client = client;
 		Container container = getContentPane();
@@ -143,7 +148,8 @@ public class Conversation extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!ClientChatArea.getText().trim().equals("")){
-					client.getProcessor().sendMessage(chat, client, ClientChatArea.getText());
+					String protocol = "post " + client.getUsername() + " " + ClientChatArea.getText().trim() + " " + chat;
+					client.getRequest().addLine(protocol);
 					ClientChatArea.setText("");
 				}
 			}
@@ -155,7 +161,8 @@ public class Conversation extends JFrame{
 			public void keyReleased(KeyEvent arg0) {
 				if ((arg0.getKeyCode() == KeyEvent.VK_ENTER)) {
 					if (!ClientChatArea.getText().trim().equals("")){
-						client.getProcessor().sendMessage(chat, client, ClientChatArea.getText());
+						String protocol = "post " + client.getUsername() + " " + ClientChatArea.getText().trim() + " " + chat;
+						client.getRequest().addLine(protocol);
 						ClientChatArea.setText("");
 					}
 				}
@@ -179,7 +186,8 @@ public class Conversation extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!InviteUsers.getText().equals("")){
-					client.getProcessor().invite(chat, InviteUsers.getText());
+//					client.getProcessor().invite(chat, InviteUsers.getText());
+					client.getRequest().addLine("invite " + InviteUsers.getText() + " " + chat);
 					InviteUsers.setText("");
 				}
 			}
@@ -190,7 +198,8 @@ public class Conversation extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!InviteUsers.getText().equals("")){
-					client.getProcessor().invite(chat, InviteUsers.getText());
+//					client.getProcessor().invite(chat, InviteUsers.getText());
+					client.getRequest().addLine("invite " + InviteUsers.getText() + " " + chat);
 					InviteUsers.setText("");
 				}
 			}
@@ -204,7 +213,8 @@ public class Conversation extends JFrame{
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				client.getProcessor().leaveConversation(chat, client);
+//				client.getProcessor().leaveConversation(chat, client);
+				client.getRequest().addLine("leave " + client.getUsername() + " " + chat);
 			}
 			@Override
 			public void windowClosing(WindowEvent arg0) {	
@@ -286,12 +296,21 @@ public class Conversation extends JFrame{
 	 * repaint ActiveUsersList area
 	 * @param clients - list of all the clients to be updated
 	 */
-	public void updateActive(List<Client> clients) {
+	public void updateActive(List<String> clients) {
+		this.members = clients;
 		StringBuilder str = new StringBuilder();
-		for (Client c: clients){
-			str.append(c.getUsername() + "\r\n");
+		for (String c: clients) {
+			str.append(c + "\r\n");
 		}
 		ActiveUsersList.setText(str.toString());
+	}
+	
+	public void setHistory(String history) {
+		ChatMess.append(history);
+	}
+	
+	public List<String> getActiveMembers() {
+		return members;
 	}
 	
     public static void main(String[] args) {}
