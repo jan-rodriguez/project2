@@ -1,10 +1,10 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Client server runner. Keeps track of all of the current Clients
@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Server {
 	
-	private static ConcurrentHashMap<String, Client> hashUsers = new ConcurrentHashMap<String, Client>();
 	private final ServerSocket serverSocket;
 	private static ServerProcess processor;
 
@@ -36,9 +35,25 @@ public class Server {
      */
 	public void connect() throws IOException {
 		while(true) {
-			Socket socket = serverSocket.accept();
-    		Client client = new Client(socket, processor);
-    		client.start();
+			final Socket socket = serverSocket.accept();
+			
+            Runnable client = new Runnable() {
+				@Override
+				public void run() {
+					try {
+						handleConnection(socket);
+		            } finally {
+		            	try {
+		            		socket.close();
+		            	} catch (IOException e) {
+		            		e.printStackTrace();
+		            	} 
+		            }
+				}	
+            };
+            
+    		Thread newClient = new Thread(client);
+    		newClient.start();
 		}
 	}
 	
@@ -50,50 +65,23 @@ public class Server {
 	 * @param client - Client which will be disconnected from the server
 	 * @throws IOException
 	 */
-	public static void handleConnection(Client client) throws IOException {		
-		hashUsers.remove(client.getUsername());
-		updateClients();
-		ConcurrentHashMap<Chat, Conversation> conversations = client.getChatMap();
-		for (Chat chat : conversations.keySet()) {
-			processor.leaveConversation(chat, client);
-			conversations.get(chat).dispose();
+	public void handleConnection(Socket socket) {
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	
+	        for (String line = in.readLine(); line != null; line=in.readLine()) {
+	        	processor.addLine(line, socket);
+	        }
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		client.getSocket().close();
-	}
-	
-	/**
-	 * updateClients is used to update the AllUsersGUI to show all other active users
-	 * that a client has either connected or disconnected and updates their GUI's
-	 * accordingly.
-	 */
-	public static void updateClients() {
-		Collection<Client> clients = hashUsers.values();
-		for (Client client : clients){
-			client.setUsers();
-		}
-	}
-	
-	/**
-	 * update public chat rooms list for all users
-	 * updateChats gets called from a client who just opens a public conversation
-	 * so that all AllUsersGUIs are updated with the new list of public conversations
-	 */
-	
-	public static void updateChats(){
-		Collection<Client> clients = hashUsers.values();
-		for (Client client : clients){
-			client.setChatRooms();
-		}
-		
-	}
-	
-	/**
-	 * Getter function for ConcurrentHashMap<String, Client> mapping all users connected
-	 * to the server from their username to the client.
-	 * @return
-	 */
-	public static ConcurrentHashMap<String, Client> gethashUsers() {
-		return hashUsers;
 	}
 	
     /**
@@ -102,22 +90,24 @@ public class Server {
      * @param String[] args - args[0] must be a valid integer
      */
     public static void main(String[] args) {
-    	Server instantmess = null;
+    	Server server = null;
     	try {
     		Integer port = Integer.parseInt(args[0]);
-    		if (port > 6035 || port < 0)
+    		if (port > 65535 || port < 0)
     			throw new NumberFormatException("Invalid port number.");
-			instantmess = new Server(port);
+			server = new Server(port);
     	} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	if (instantmess != null)
+    	
+    	if (server != null) {
 			try {
-				instantmess.connect();
+				server.connect();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+    	}
     }
 }

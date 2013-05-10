@@ -96,29 +96,44 @@ public class ConnectionGUI extends JFrame {
          * port TextFields and tries to connect to the server at that 
          * location. Closes window if successful, otherwise resets TextFields.
          */
-		submit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e){
-				try {
-					int portValue = Integer.parseInt(port.getText());
-					if (portValue < 0 || portValue >= 6035)
-						throw new IOException();
-					new Socket(IP.getText(), portValue);
-					dispose();
-				} catch (UnknownHostException ue) {
-					IP.setText("");
-					port.setText("");
-					error.setText("Invalid IP.");
-				} catch (IOException ioe) {
-					IP.setText("");
-					port.setText("");
-					error.setText("Invalid port.");
-				} catch (NumberFormatException ne) {
-					IP.setText("");
-					port.setText("");
-					error.setText("Invalid port.");
-				}
-			}
-		});
+//		submit.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e){
+//				try {
+//					int portValue = Integer.parseInt(port.getText());
+//					if (portValue < 0 || portValue > 65535)
+//						throw new IOException();
+//					new Socket(IP.getText(), portValue);
+//					dispose();
+//				} catch (UnknownHostException ue) {
+//					IP.setText("");
+//					port.setText("");
+//					error.setText("Invalid IP.");
+//				} catch (IOException ioe) {
+//					IP.setText("");
+//					port.setText("");
+//					error.setText("Invalid port.");
+//				} catch (NumberFormatException ne) {
+//					IP.setText("");
+//					port.setText("");
+//					error.setText("Invalid port.");
+//				}
+//			}
+//		});
 	}
 	
+	public JButton getSubmit() {
+		return submit;
+	}
+	
+	public JTextField getPort() {
+		return port;
+	}
+	
+	public JTextField getIP() {
+		return IP;
+	}
+	
+	public JLabel getError() {
+		return error;
+	}
 }

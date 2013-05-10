@@ -9,6 +9,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,10 +50,12 @@ public class AllUsersGUI extends JFrame {
     private DefaultListModel arrChats;
     private JButton Public;
     private JButton Private;
-    private final Client client;
+    private final ClientSide client;
+    private List<String> users;
     
-    public AllUsersGUI(final Client client){    	
+    public AllUsersGUI(final ClientSide client){    	
     	this.client = client;
+    	this.users = new ArrayList<String>();
     	Container container = getContentPane();
 		setTitle(client.getUsername());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
@@ -83,7 +87,7 @@ public class AllUsersGUI extends JFrame {
 		
 		
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
-		List<String> rooms = client.getProcessor().getpublicChats();
+		List<String> rooms = client.getpublicChats();
 		arrChats = new DefaultListModel();
 		for (int i = 0; i < rooms.size(); i++){
 			arrChats.addElement(rooms.get(i));
@@ -97,7 +101,7 @@ public class AllUsersGUI extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				Creator.setText(client.getProcessor().getCreator(Chats.getSelectedValue().toString()));
+			//	Creator.setText(client.getCreator(Chats.getSelectedValue().toString()));
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -131,7 +135,7 @@ public class AllUsersGUI extends JFrame {
 				if (!Chats.isSelectionEmpty())
 				// Join a conversation is like inviting that person to the chat
 				// call join() from the processor, provide id of chat (string) and username
-				client.getProcessor().join(Chats.getSelectedValue().toString(), client.getUsername());
+				client.getRequest().addLine("invite " + client.getUsername() + " " + Chats.getSelectedValue().toString());
 			}
 			
 		});
@@ -146,8 +150,8 @@ public class AllUsersGUI extends JFrame {
 		Private.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				Chats.clearSelection();
-				client.getProcessor().newPrivateChat(client);
-		}
+				client.getRequest().addLine("new " + client.getUsername());
+			}
 		});
 	
 		this.addWindowListener(new WindowListener(){
@@ -158,12 +162,13 @@ public class AllUsersGUI extends JFrame {
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				try {
-					Server.handleConnection(client);
-				} catch (IOException e) {
-					e.printStackTrace();
+				String chatString = "";
+				Collection<String> chats = client.getChatMap().keySet();
+				for (String chat: chats) {
+					chatString += chat + " ";
 				}
-				
+				client.removeAllChats();
+				client.getRequest().addLine("disconnect " + client.getUsername() + " " + chatString);
 			}
 			@Override
 			public void windowClosing(WindowEvent arg0) {				
@@ -185,7 +190,8 @@ public class AllUsersGUI extends JFrame {
 		/// Public
 		Public.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-			client.getProcessor().newPublicChat(client);
+//			client.getProcessor().newPublicChat(client);
+			client.getRequest().addLine("new " + client.getUsername());
 		}
 		});
 	
@@ -198,12 +204,12 @@ public class AllUsersGUI extends JFrame {
 	
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				try {
-					Server.handleConnection(client);
-				} catch (IOException e) {
-					e.printStackTrace();
+				String chatString = "";
+				Collection<String> chats = client.getChatMap().keySet();
+				for (String chat: chats) {
+					chatString += chat + " ";
 				}
-				
+				client.getRequest().addLine("disconnect " + client.getUsername() + " " + chatString);
 			}
 			@Override
 			public void windowClosing(WindowEvent arg0) {				
@@ -288,7 +294,8 @@ public class AllUsersGUI extends JFrame {
 	 * @param clientsName - Collection<String> of all clients currently connected to the server
 	 */
 	
-	public void updateUsers(Collection<String> clientsName){
+	public void updateUsers(List<String> clientsName){
+		users = clientsName;
 		StringBuilder str = new StringBuilder();
 		for (String c: clientsName){
 			str.append(c + "\r\n");
@@ -309,6 +316,18 @@ public class AllUsersGUI extends JFrame {
 		for (int i = 0; i < rooms.size(); i++){
 			arrChats.addElement(rooms.get(i).toString());
 		}
+	}
+	
+	public List<String> getActiveUsers() {
+		return users;
+	}
+	
+	public List<String> getChatRooms() {
+		List<String> chats = new ArrayList<String>();
+		for (int i = 0; i < arrChats.size(); i++) {
+			chats.add(arrChats.get(i).toString());
+		}
+		return chats;
 	}
 
     public static void main(String[] args) {}
