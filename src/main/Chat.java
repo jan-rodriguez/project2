@@ -3,7 +3,6 @@ package main;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,14 +15,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Chat {
 	
-	private Collection<Client> members;
+	private Collection<String> history;
+	private Collection<String> members;
 	private final int id;
 	/**
 	 * Constructor method for Chat
 	 * @param id - AtomicInteger representing unique id assigned to a chat
 	 */
 	public Chat(AtomicInteger id) {
-		members = Collections.synchronizedCollection( new ArrayList<Client>() );
+		history = Collections.synchronizedCollection( new ArrayList<String>() );
+		members = Collections.synchronizedCollection( new ArrayList<String>() );
 		this.id = id.intValue();
 	}
 	
@@ -31,16 +32,16 @@ public class Chat {
 	 * Method used to add clients to the chat
 	 * @param client - Client that is added to the chat
 	 */
-	public void addMember(Client client) {
-		members.add(client);
+	public void addMember(String username) {
+		members.add(username);
 	}
 
 	/**
 	 * Method used to remove clients from the chat
 	 * @param client - Client that is removed form the chat
 	 */
-	public void removeMember(Client client) {
-		members.remove(client);
+	public void removeMember(String username) {
+		members.remove(username);
 	}
 	
 	/**
@@ -56,20 +57,35 @@ public class Chat {
 	 * @param client - Client checked whether is an active user in the chat
 	 * @return boolean - true if the client is a member of the chat, false otherwise
 	 */
-	public boolean isMember(Client client) {
-		return members.contains(client);
+	public boolean isMember(String username) {
+		return members.contains(username);
+	}
+	
+	public void addHistory(String sender, String message) {
+		history.add(sender.trim() + ": " + message.trim());
 	}
 	
 	/**
 	 * Getter methods
 	 */
-	public List<Client> getMembers() {
-		List<Client> membersCopy = new ArrayList<Client>(members);
-		return membersCopy;
+	public Collection<String> getMembers() {
+		return members;
+	}
+	
+	public Collection<String> gethistory() {
+		return history;
 	}
 	
 	public int getID() {
 		return id;
+	}
+	
+	public String getHistoryString() {
+		String result = "";
+		for (String line: history) {
+			result += line + " ";
+		}
+		return result;
 	}
 	
 }
