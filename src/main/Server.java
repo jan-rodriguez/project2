@@ -16,7 +16,7 @@ public class Server {
 	private static ServerProcess processor;
 
 	/**
-	 * Constructor method for the Server.
+	 * Constructor method for the Server .
 	 * @param port - integer specifying the port the SeverSocket where the server socket will be created.
 	 * @throws IOException
 	 */
