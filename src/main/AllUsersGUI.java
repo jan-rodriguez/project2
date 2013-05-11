@@ -146,8 +146,9 @@ public class AllUsersGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 //	        	System.out.println("creator in AllUsersGUI");
-
-				client.getRequest().addLine("creator " + client.getUsername() + " " + Chats.getSelectedValue());
+				if (Chats.getSelectedValue()!= null){
+					client.getRequest().addLine("creator " + client.getUsername() + " " + Chats.getSelectedValue());
+				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
