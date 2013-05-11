@@ -51,7 +51,7 @@ public class ClientSideThread extends Thread {
 					}
 					if (count < tokens.length-2)
 						client.updateHistory(tokens[tokens.length-1], count+1, tokens);
-					client.updateChatMembers(tokens[tokens.length-1], members);
+					client.setChatMembers(tokens[tokens.length-1], members);
 				} else if (tokens[0].equals("post")) {
 					String message = "";
 					for (int i = 2; i < tokens.length-1; i++) {

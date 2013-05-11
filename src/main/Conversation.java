@@ -60,12 +60,9 @@ public class Conversation extends JFrame{
     private JTextField InviteUsers; 
     
     private final ClientSide client;
-	private final String chat;	
-	private List<String> members;
-	
+	private final String chat;		
 	
 	public Conversation(final String chat, final ClientSide client) {
-		this.members = new ArrayList<String>();
 		this.chat = chat;
 		this.client = client;
 		Container container = getContentPane();
@@ -210,7 +207,6 @@ public class Conversation extends JFrame{
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-//				client.getProcessor().leaveConversation(chat, client);
 				client.getRequest().addLine("leave " + client.getUsername() + " " + chat);
 			}
 			@Override
@@ -294,7 +290,6 @@ public class Conversation extends JFrame{
 	 * @param clients - list of all the clients to be updated
 	 */
 	public void updateActive(List<String> clients) {
-		this.members = clients;
 		StringBuilder str = new StringBuilder();
 		for (String c: clients) {
 			str.append(c + "\r\n");
@@ -304,10 +299,6 @@ public class Conversation extends JFrame{
 	
 	public void setHistory(String history) {
 		ChatMess.append(history);
-	}
-	
-	public List<String> getActiveMembers() {
-		return members;
 	}
 	
     public static void main(String[] args) {}
