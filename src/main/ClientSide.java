@@ -24,7 +24,6 @@ public class ClientSide {
 	private ClientSideThread thread = null;
 	private ClientRequest request = null;
 	private String username = null;
-	
 	private HistoryGUI historyGUI;
 	
 	/**

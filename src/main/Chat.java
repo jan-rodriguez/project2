@@ -17,15 +17,17 @@ public class Chat {
 	
 	private Collection<String> history;
 	private Collection<String> members;
+	private final String creator;
 	private final int id;
 	/**
 	 * Constructor method for Chat
 	 * @param id - AtomicInteger representing unique id assigned to a chat
 	 */
-	public Chat(AtomicInteger id) {
+	public Chat(AtomicInteger id, String creator) {
 		history = Collections.synchronizedCollection( new ArrayList<String>() );
 		members = Collections.synchronizedCollection( new ArrayList<String>() );
 		this.id = id.intValue();
+		this.creator = creator;
 	}
 	
 	/**
@@ -78,6 +80,10 @@ public class Chat {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public String getCreator() {
+		return creator;
 	}
 	
 	public String getHistoryString() {
