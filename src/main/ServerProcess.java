@@ -62,7 +62,7 @@ public class ServerProcess extends Thread {
 		            	out.println("abort");
 		            }
 		        } else if (tokens[0].equals("new")) {
-		    		Chat chat = new Chat(chatNumber);
+		    		Chat chat = new Chat(chatNumber, tokens[1]);
 		    		chatNumber.getAndIncrement();
 		    		chat.addMember(tokens[1]);
 		    		hashChats.put("" + chat.getID(), chat);	
@@ -141,7 +141,7 @@ public class ServerProcess extends Thread {
 		        } else if (tokens[0].equals("creator")){
 		        	// creator username ChatNumber
 //		        	System.out.println("creator in serverProcess");
-		        	hashUsers.get(tokens[1]).println("creator " + hashChats.get(tokens[2]).getMembers().iterator().next());
+		        	hashUsers.get(tokens[1]).println("creator " + hashChats.get(tokens[2]).getCreator());
 		        }
 			}
 		} catch (InterruptedException e) {
