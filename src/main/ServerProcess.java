@@ -134,6 +134,8 @@ public class ServerProcess extends Thread {
 					for (String member: members) {
 						hashUsers.get(member).println("leave " + tokens[1] + " " + tokens[2]);
 					}
+		        } else if (tokens[0].equals("view")){
+		        	hashUsers.get(tokens[1]).println("view " + tokens[1]);
 		        }
 			}
 		} catch (InterruptedException e) {

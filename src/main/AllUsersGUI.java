@@ -108,21 +108,21 @@ public class AllUsersGUI extends JFrame {
 		menuItemHistory = new JMenuItem("History");		
 		menuItemHistory.addActionListener(new ActionListener(){		
 			public void actionPerformed(ActionEvent e){		
-				System.out.println("Open history window");		
+				client.getRequest().addLine("view "+ client.getUsername());
 			}		
 		});
 		
 		menu2.add(menuItemHistory);		
 		menubar.add(menu2);		
 		menuItemPublic.addActionListener(new ActionListener(){		
-			public void actionPerformed(ActionEvent e){		
-//				client.getProcessor().newPublicChat(client);		
+			public void actionPerformed(ActionEvent e){	
+				client.getRequest().addLine("new " + client.getUsername());
 			}		
 		});		
         menuItemPrivate.addActionListener(new ActionListener(){		
             public void actionPerformed(ActionEvent e){		
-//	            client.getProcessor().newPrivateChat(client);		
-	        }		
+            	client.getRequest().addLine("new " + client.getUsername());	        
+            }		
         });    		
 			        
 		

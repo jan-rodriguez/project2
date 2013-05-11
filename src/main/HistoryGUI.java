@@ -20,11 +20,11 @@ public class HistoryGUI  extends JFrame{
 	private JLabel ChatsID;
 	private JLabel Message;
 	private DefaultListModel arrChats;
-	private final int id;
+	private final String username;
 	
 	
-	public HistoryGUI(int id) {
-		this.id = id;
+	public HistoryGUI(String username) {
+		this.username = username;
 		
 		Container container = getContentPane();
 		setTitle("History");
@@ -91,7 +91,7 @@ public class HistoryGUI  extends JFrame{
 	}
 	
 	public static void main(String[] args){
-		new HistoryGUI(3);
+		new HistoryGUI("Chau");
 		
 	}
 

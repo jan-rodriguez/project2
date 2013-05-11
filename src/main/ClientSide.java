@@ -165,6 +165,10 @@ public class ClientSide {
 		conversations.put(id, conversation);
 	}
 	
+	public void showHistory(){
+		HistoryGUI historyGUI = new HistoryGUI(this.getUsername());
+	}
+	
 	public void updateHistory(String id, int index, String[] history) {
 		String historyString = "";
 		for (int i = index; i < history.length-1; i++) {

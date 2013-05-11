@@ -62,6 +62,8 @@ public class ClientSideThread extends Thread {
 					client.removeUser(tokens[1]);
 				} else if (tokens[0].equals("leave")) {
 					client.removeFromChat(tokens[1], tokens[2]);
+				} else if(tokens[0].equals("view")){
+					client.showHistory();
 				}
 	        }
 		} catch (IOException e) {
