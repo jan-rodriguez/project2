@@ -37,7 +37,7 @@ public class ClientSideThread extends Thread {
 	     
 				if (tokens[0].equals("connect")) {
 					client.addUser(tokens[1]);
-				}else if (tokens[0].equals("create")) {
+				} else if (tokens[0].equals("create")) {
 					client.addChatRoom(tokens[1]);
 				} else if (tokens[0].equals("added")) {
 					client.addToChat(tokens[1], tokens[2]);
@@ -56,21 +56,18 @@ public class ClientSideThread extends Thread {
 						client.updateHistory(tokens[tokens.length-1], count+1, tokens);
 					client.setChatMembers(tokens[tokens.length-1], members);
 				} else if (tokens[0].equals("post")) {
-					String message = "";
+					StringBuilder message = new StringBuilder("");
 					for (int i = 2; i < tokens.length-1; i++) {
-						message += tokens[i] + " ";
+						message.append(tokens[i] + " ");
 					}
-					client.newMessage(tokens[1], message.trim(), tokens[tokens.length-1]);
+					client.newMessage(tokens[1], message.toString().trim(), tokens[tokens.length-1]);
 				} else if (tokens[0].equals("disconnect")) {
 					client.removeUser(tokens[1]);
 				} else if (tokens[0].equals("leave")) {
 					client.removeFromChat(tokens[1], tokens[2]);
-					// TODO: ask if these are right
 				} else if(tokens[0].equals("view")){
 					client.showHistory();
 				} else if(tokens[0].equals("creator")){
-//		        	System.out.println("creator in clientSideThread");
-
 					client.showCreator(tokens[1]);
 				}
 	        }
@@ -78,6 +75,5 @@ public class ClientSideThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 
 }

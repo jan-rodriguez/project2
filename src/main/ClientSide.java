@@ -166,20 +166,20 @@ public class ClientSide {
 	 * Open a new historyGUI
 	 */
 	public void showHistory(){
-		historyGUI = new HistoryGUI(this.getChatMap());
+		setHistoryGUI(new HistoryGUI(this.getChatMap()));
 	}
 	
 	public void updateHistory(String id, int index, String[] history) {
-		String historyString = "";
+		StringBuilder historyString = new StringBuilder("");
 		for (int i = index; i < history.length-1; i++) {
-			historyString += history[i] + " ";
+			historyString.append(history[i] + " ");
 			if (i < history.length-2) {
 				if (history[i+1].contains(":")) 
-					historyString += "\r\n";
+					historyString.append("\r\n");
 			}
 		}
-		historyString += "\r\n";
-		conversations.get(id).setHistory(historyString);
+		historyString.append("\r\n");
+		conversations.get(id).setHistory(historyString.toString());
 	}
 	
 	/**
@@ -296,9 +296,16 @@ public class ClientSide {
 		});
     }
 
-	public void showCreator(String string) {
-		// TODO Auto-generated method stub
-		rootWindow.displayCreator(string);
+	public void showCreator(String creator) {
+		rootWindow.displayCreator(creator);
+	}
+
+	public HistoryGUI getHistoryGUI() {
+		return historyGUI;
+	}
+
+	public void setHistoryGUI(HistoryGUI historyGUI) {
+		this.historyGUI = historyGUI;
 	}
     
 }
