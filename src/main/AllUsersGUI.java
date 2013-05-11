@@ -208,10 +208,10 @@ public class AllUsersGUI extends JFrame {
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				String chatString = "";
+				StringBuilder chatString = new StringBuilder("");
 				Collection<String> chats = client.getChatMap().keySet();
 				for (String chat: chats) {
-					chatString += chat + " ";
+					chatString.append(chat + " ");
 				}
 				client.removeAllChats();
 				client.getRequest().addLine("disconnect " + client.getUsername() + " " + chatString);
