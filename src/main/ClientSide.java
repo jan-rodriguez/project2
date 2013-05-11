@@ -247,55 +247,43 @@ public class ClientSide {
     public static void main(String[] args) {
     	final ConnectionGUI con = new ConnectionGUI();
     	
-		con.getSubmit().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e){
-				try {
-					int portValue = Integer.parseInt(con.getPort().getText());
-					if (portValue < 0 || portValue > 65535)
-						throw new IOException();
-					new ClientSide(new Socket(con.getIP().getText(), portValue));
-					con.dispose();
-				} catch (UnknownHostException ue) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid IP.");
-				} catch (IOException ioe) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid port.");
-				} catch (NumberFormatException ne) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid port.");
-				}
-			}
-		});
-		
-		con.getPort().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e){
-				try {
-					int portValue = Integer.parseInt(con.getPort().getText());
-					if (portValue < 0 || portValue > 65535)
-						throw new IOException();
-					new ClientSide(new Socket(con.getIP().getText(), portValue));
-					con.dispose();
-				} catch (UnknownHostException ue) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid IP.");
-				} catch (IOException ioe) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid port.");
-				} catch (NumberFormatException ne) {
-					con.getIP().setText("");
-					con.getPort().setText("");
-					con.getError().setText("Invalid port.");
-				}
-			}
-		});
-    }
+    	class ConnectionSend implements ActionListener{
+        	ConnectionGUI con;
+        	
+        	public ConnectionSend(ConnectionGUI con){
+        		this.con = con;
+        	}
 
+    		@Override
+    		public void actionPerformed(ActionEvent arg0) {
+    			try {
+    				int portValue = Integer.parseInt(con.getPort().getText());
+    				if (portValue < 0 || portValue > 65535)
+    					throw new IOException();
+    				new ClientSide(new Socket(con.getIP().getText(), portValue));
+    				con.dispose();
+    			} catch (UnknownHostException ue) {
+    				con.getIP().setText("");
+    				con.getPort().setText("");
+    				con.getError().setText("Invalid IP.");
+    			} catch (IOException ioe) {
+    				con.getIP().setText("");
+    				con.getPort().setText("");
+    				con.getError().setText("Invalid port.");
+    			} catch (NumberFormatException ne) {
+    				con.getIP().setText("");
+    				con.getPort().setText("");
+    				con.getError().setText("Invalid port.");
+    			}
+    		}    	
+        }
+    	
+		con.getSubmit().addActionListener(new ConnectionSend(con));
+		
+		con.getPort().addActionListener(new ConnectionSend(con));
+    }
+    
+    
 	public void showCreator(String creator) {
 		rootWindow.displayCreator(creator);
 	}
