@@ -149,7 +149,7 @@ public class Conversation extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				if (!ClientChatArea.getText().trim().equals("")){
 					String protocol = "post " + client.getUsername() + " " + ClientChatArea.getText().trim() + " " + chat;
-					client.getRequest().addLine(protocol);
+					client.getRequest().addLine(protocol.replaceAll("[\\r\\n]+", ""));
 					ClientChatArea.setText("");
 				}
 			}
@@ -162,7 +162,7 @@ public class Conversation extends JFrame{
 				if ((arg0.getKeyCode() == KeyEvent.VK_ENTER)) {
 					if (!ClientChatArea.getText().trim().equals("")){
 						String protocol = "post " + client.getUsername() + " " + ClientChatArea.getText().trim() + " " + chat;
-						client.getRequest().addLine(protocol);
+						client.getRequest().addLine(protocol.replaceAll("[\\r\\n]+", ""));
 						ClientChatArea.setText("");
 					}
 				}

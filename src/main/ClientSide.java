@@ -179,7 +179,7 @@ public class ClientSide {
 	}
 	
 	/**
-	 * Updates all of the speciefied chat's list of active users, is called whenever a 
+	 * Updates all of the specified chat's list of active users, is called whenever a 
 	 * user either disconnects or connects from the chat.
 	 * @param chat - Chat to be updated
 	 */
