@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ClientSide {
 	
 	private ConcurrentHashMap<String, Conversation> conversations = new ConcurrentHashMap<String, Conversation>();
+	private ConcurrentHashMap<String, List<String>> chatMembers = new ConcurrentHashMap<String, List<String>>();
+	private List<String> allChats = new ArrayList<String>();
+	private List<String> allUsers = new ArrayList<String>();
 	private final Socket socket;
 	private AllUsersGUI rootWindow;
 	private ClientSideThread thread = null;
@@ -83,8 +86,10 @@ public class ClientSide {
 						else
 							chats.add(tokens[i]);
 					}
-					setUsers(users);
-					setChatRooms(chats);
+					allUsers.addAll(users);
+					setUsers();
+					allChats.addAll(chats);
+					setChatRooms();
 		        	usernameGUI.dispose();
 		    		
 		        	thread = new ClientSideThread(socket, ClientSide.this);
@@ -108,20 +113,18 @@ public class ClientSide {
 	 * all currently connected clients. Is called when a client connects
 	 * or disconnects.
 	 */
-	public void setUsers(List<String> users) {
-		rootWindow.updateUsers(users);
+	public void setUsers() {
+		rootWindow.updateUsers(allUsers);
 	}
 	
 	public void addUser(String user) {
-		List<String> users = rootWindow.getActiveUsers();
-		users.add(user);
-		setUsers(users);
+		allUsers.add(user);
+		setUsers();
 	}
 	
 	public void removeUser(String user) {
-		List<String> users = rootWindow.getActiveUsers();
-		users.remove(user);
-		setUsers(users);
+		allUsers.remove(user);
+		setUsers();
 	}
 	
 	/**
@@ -129,20 +132,13 @@ public class ClientSide {
 	 * update rootWindow with new list of public chats
 	 */
 	
-	public List<String> getpublicChats() {
-		List<String> chats = new ArrayList<String>();
-		chats.addAll(conversations.keySet());
-		return chats;
-	}
-	
-	public void setChatRooms(List<String> chats){
-		rootWindow.updateChatRooms(chats);
+	public void setChatRooms(){
+		rootWindow.updateChatRooms(allChats);
 	}
 	
 	public void addChatRoom(String id) {
-		List<String> chatList = rootWindow.getChatRooms();
-		chatList.add(id);
-		setChatRooms(chatList);
+		allChats.add(id);
+		setChatRooms();
 	}
 	
 	/**
@@ -196,6 +192,11 @@ public class ClientSide {
 		conversations.get(id).updateActive(members);
 	}
 	
+	public void setChatMembers(String id, List<String> members) {
+		chatMembers.put(id, members);
+		updateChatMembers(id, chatMembers.get(id));
+	}
+	
 	/**
 	 * Removes a chat from the ConcurrentHashMap of conversations. Is called
 	 * whenever a chat contains no members.
@@ -206,17 +207,13 @@ public class ClientSide {
 	}
 	
 	public void removeFromChat(String client, String id) {
-		Conversation convo = conversations.get(id);
-		List<String> members = convo.getActiveMembers();
-		members.remove(client);
-		updateChatMembers(id, members);
+		chatMembers.get(id).remove(client);
+		updateChatMembers(id, chatMembers.get(id));
 	}
 	
 	public void addToChat(String client, String id) {
-		Conversation convo = conversations.get(id);
-		List<String> members = convo.getActiveMembers();
-		members.add(client);
-		updateChatMembers(id, members);
+		chatMembers.get(id).add(client);
+		updateChatMembers(id, chatMembers.get(id));
 	}
 	
 	public void removeAllChats() {
@@ -274,6 +271,7 @@ public class ClientSide {
 				}
 			}
 		});
+		
 		con.getPort().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				try {

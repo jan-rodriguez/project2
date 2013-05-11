@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -8,9 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,7 +53,6 @@ public class AllUsersGUI extends JFrame {
 //    private JButton Public;
 //    private JButton Private;
     private final ClientSide client;
-    private List<String> users;
     
     private final JMenuBar menubar;
     private final JMenu menu;
@@ -66,7 +63,6 @@ public class AllUsersGUI extends JFrame {
     private final JScrollPane ChatsPane;
     public AllUsersGUI(final ClientSide client){    	
     	this.client = client;
-    	this.users = new ArrayList<String>();
     	Container container = getContentPane();
 		setTitle(client.getUsername());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
@@ -132,11 +128,11 @@ public class AllUsersGUI extends JFrame {
 		
 		
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
-		List<String> rooms = client.getpublicChats();
 		arrChats = new DefaultListModel();
-		for (int i = 0; i < rooms.size(); i++){
-			arrChats.addElement(rooms.get(i));
-		} 
+//		List<String> rooms = client.getpublicChats();
+//		for (int i = 0; i < rooms.size(); i++){
+//			arrChats.addElement(rooms.get(i));
+//		} 
 		
 		// Chats is a JList that contains arrChats DefaulListModel
 		Chats = new JList(arrChats);
@@ -237,47 +233,6 @@ public class AllUsersGUI extends JFrame {
 			}
 		});
 		
-		/// Public
-//		Public.addActionListener(new ActionListener(){
-//			public void actionPerformed(ActionEvent e){
-////			client.getProcessor().newPublicChat(client);
-//			client.getRequest().addLine("new " + client.getUsername());
-//		}
-//		});
-	
-//		this.addWindowListener(new WindowListener(){
-//	
-//			@Override
-//			public void windowActivated(WindowEvent arg0) {
-//				
-//			}
-//	
-//			@Override
-//			public void windowClosed(WindowEvent arg0) {
-//				String chatString = "";
-//				Collection<String> chats = client.getChatMap().keySet();
-//				for (String chat: chats) {
-//					chatString += chat + " ";
-//				}
-//				client.getRequest().addLine("disconnect " + client.getUsername() + " " + chatString);
-//			}
-//			@Override
-//			public void windowClosing(WindowEvent arg0) {				
-//			}
-//			@Override
-//			public void windowDeactivated(WindowEvent arg0) {
-//			}
-//			@Override
-//			public void windowDeiconified(WindowEvent arg0) {
-//			}
-//			@Override
-//			public void windowIconified(WindowEvent arg0) {
-//			}
-//			@Override
-//			public void windowOpened(WindowEvent arg0) {
-//			}
-//		});
-		
 	
         ////////// BEGIN Layout    ///////////////////
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -349,7 +304,6 @@ public class AllUsersGUI extends JFrame {
 	 */
 	
 	public void updateUsers(List<String> clientsName){
-		users = clientsName;
 		StringBuilder str = new StringBuilder();
 		for (String c: clientsName){
 			str.append(c + "\r\n");
@@ -371,17 +325,9 @@ public class AllUsersGUI extends JFrame {
 			arrChats.addElement(rooms.get(i).toString());
 		}
 	}
-	
-	public List<String> getActiveUsers() {
-		return users;
-	}
-	
-	public List<String> getChatRooms() {
-		List<String> chats = new ArrayList<String>();
-		for (int i = 0; i < arrChats.size(); i++) {
-			chats.add(arrChats.get(i).toString());
-		}
-		return chats;
+
+	public ClientSide getClient() {
+		return client;
 	}
 
     public static void main(String[] args) {}
