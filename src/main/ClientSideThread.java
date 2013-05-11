@@ -9,15 +9,20 @@ import java.util.List;
 
 public class ClientSideThread extends Thread {
 
-	private final Socket socket;
 	private final ClientSide client;
+	private BufferedReader in = null;
 
 	/**
 	 * Constructor method for ServerProcess. Instantiates the blocking queue.
 	 */
 	public ClientSideThread(Socket socket, ClientSide client) {
 		this.client = client;
-		this.socket = socket;
+		
+		try {
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -26,9 +31,7 @@ public class ClientSideThread extends Thread {
 	 * and runs the actions specified by the current action input.
 	 */
 	public void run() {
-		try {
-	        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	
+		try {	
 	        for (String line = in.readLine(); line != null; line=in.readLine()) {        
 				String[] tokens = line.split("\\s+");
 	     
