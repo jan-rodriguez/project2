@@ -149,7 +149,9 @@ public class AllUsersGUI extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-			//	Creator.setText(client.getCreator(Chats.getSelectedValue().toString()));
+//	        	System.out.println("creator in AllUsersGUI");
+
+				client.getRequest().addLine("creator " + client.getUsername() + " " + Chats.getSelectedValue());
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -383,5 +385,10 @@ public class AllUsersGUI extends JFrame {
 	}
 
     public static void main(String[] args) {}
+
+	public void displayCreator(String string) {
+		// TODO Auto-generated method stub
+		Creator.setText(string);
+	}
     
 }
