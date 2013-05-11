@@ -265,6 +265,29 @@ public class ClientSide {
 				}
 			}
 		});
+		con.getPort().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				try {
+					int portValue = Integer.parseInt(con.getPort().getText());
+					if (portValue < 0 || portValue > 65535)
+						throw new IOException();
+					new ClientSide(new Socket(con.getIP().getText(), portValue));
+					con.dispose();
+				} catch (UnknownHostException ue) {
+					con.getIP().setText("");
+					con.getPort().setText("");
+					con.getError().setText("Invalid IP.");
+				} catch (IOException ioe) {
+					con.getIP().setText("");
+					con.getPort().setText("");
+					con.getError().setText("Invalid port.");
+				} catch (NumberFormatException ne) {
+					con.getIP().setText("");
+					con.getPort().setText("");
+					con.getError().setText("Invalid port.");
+				}
+			}
+		});
     }
     
 }
