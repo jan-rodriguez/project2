@@ -24,6 +24,7 @@ public class ChatTest {
 		out.add("gabo");
 		Iterator<String> testit = out.iterator();
 		
+		
 		for(String mem: test.getMembers()){
 			assertTrue(mem.equals(testit.next()));
 		}
