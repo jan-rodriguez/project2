@@ -26,6 +26,8 @@ public class HistoryGUI  extends JFrame{
 	private JList Chats;
 	private JLabel ChatsID;
 	private JLabel Message;
+	private JScrollPane messPane;
+
 	private Object[] arrChats;
 	private final ConcurrentHashMap<String, Conversation> ChatMap;
 	
@@ -36,11 +38,13 @@ public class HistoryGUI  extends JFrame{
 		setTitle("Chats as of " + (new Date()).toString());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
 		setPreferredSize(new Dimension(380, 200));
-		setMinimumSize(new Dimension(380, 200));
+		setMinimumSize(new Dimension(380, 250));
 		
 		ChatsID = new JLabel("Chat Room No. ");
 		Message = new JLabel("History");
 		history = new JTextArea(8, 4);
+		messPane = new JScrollPane(history, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
 		Set<String> ids = ChatMap.keySet();
 
@@ -90,7 +94,7 @@ public class HistoryGUI  extends JFrame{
     		 .addGroup(
     				 layout.createSequentialGroup()
     				 .addComponent(Message)
-    				 .addComponent(history)
+    				 .addComponent(messPane)
     		 )
     		 );
 		
@@ -104,7 +108,7 @@ public class HistoryGUI  extends JFrame{
     		 .addGroup(
     				 layout.createParallelGroup(Alignment.CENTER)
     				 .addComponent(Message)
-    				 .addComponent(history)
+    				 .addComponent(messPane)
     		 )
     		 );
      pack();
