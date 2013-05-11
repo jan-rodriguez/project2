@@ -64,7 +64,7 @@ public class ClientSide {
 		        //Assuring that the username has not been taken
 	            out.println("username " + username);
 	            String response = in.readLine();
-	            String[] tokens = response.split(" ");
+	            String[] tokens = response.split("\\s+");
 	            
 		        if (tokens[0].equals("start")) {
 					rootWindow = new AllUsersGUI(ClientSide.this);

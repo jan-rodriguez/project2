@@ -43,7 +43,7 @@ public class ServerProcess extends Thread {
 		try {
 			while (true) {
 				Object[] action = queue.take();
-				String[] tokens = ((String) action[0]).split(" ");
+				String[] tokens = ((String) action[0]).split("\\s+");
 				Socket socket = (Socket) action[1];
 				
 		        out = new PrintWriter(socket.getOutputStream(), true);
@@ -55,8 +55,10 @@ public class ServerProcess extends Thread {
 
 		            	Collection<Socket> sockets = hashUsers.values();
 		            	for (Socket subSocket: sockets) {
-					        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-					        subOut.println("connect " + tokens[1]);
+		            		if(!subSocket.equals(hashUsers.get(tokens[1]))){
+						        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
+						        subOut.println("connect " + tokens[1]);
+		            		}
 		            	}
 		            } else {
 		            	out.println("abort");
@@ -78,9 +80,9 @@ public class ServerProcess extends Thread {
 		        	System.out.println(chat);
 		        	Collection<String> members = chat.getMembers();
 		        	
-			        String message = "";
+			        StringBuilder message = new StringBuilder("");
 			        for (int i = 2; i < tokens.length-1; i++) {
-			        	message += tokens[i] + " ";
+			        	message.append(tokens[i] + " ");
 			        }
 			        
 		        	for (String member: members) {
@@ -89,7 +91,7 @@ public class ServerProcess extends Thread {
 				        subOut.println("post " + tokens[1] + " " + message + " " + tokens[tokens.length-1]);
 		        	}
 		        	
-		        	chat.addHistory(tokens[1], message);
+		        	chat.addHistory(tokens[1], message.toString());
 		        } else if (tokens[0].equals("invite")) {
 		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
 
@@ -105,10 +107,10 @@ public class ServerProcess extends Thread {
 		        		Socket subSocket = hashUsers.get(token);
 		        		chat.addMember(token);
 		        		
-		        		String memberList = "";
+		        		StringBuilder memberList = new StringBuilder("");
 		        		Collection<String> members = chat.getMembers();
 			        	for (String member: members) {
-			        		memberList += member + " ";
+			        		memberList.append(member + " ");
 			        		if (!member.equals(token)) {
 				        		Socket theSocket = hashUsers.get(member);
 				        		PrintWriter theOut = new PrintWriter(theSocket.getOutputStream(), true);
@@ -164,20 +166,20 @@ public class ServerProcess extends Thread {
 	
 	public String getAllUsers() {
     	Collection<String> users = hashUsers.keySet();
-    	String userString = "";
+    	StringBuilder userString = new StringBuilder("");
     	for (String user: users) {
-    		userString += user + " ";
+    		userString.append(user + " ");
     	}
-    	return userString.trim();
+    	return userString.toString().trim();
 	}
 	
 	public String getAllChats() {
 		Collection<String> chats = hashChats.keySet();
-    	String chatString = "";
+    	StringBuilder chatString = new StringBuilder("");
     	for (String chat: chats) {
-    		chatString += chat + " ";
+    		chatString.append(chat + " ");
     	}
-    	return chatString.trim();
+    	return chatString.toString().trim();
 	}
 
 
