@@ -301,6 +301,10 @@ public class Conversation extends JFrame{
 		ChatMess.append(history);
 	}
 	
+	public String getHistory(){
+		return ChatMess.getText();
+	}
+	
     public static void main(String[] args) {}
     
 }

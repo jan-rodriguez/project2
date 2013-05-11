@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.swing.text.html.HTMLDocument.Iterator;
+
 
 /**
  * serverProcess is a thread of server. It gets started when server is created
@@ -132,6 +134,14 @@ public class ServerProcess extends Thread {
 					for (String member: members) {
 						hashUsers.get(member).println("leave " + tokens[1] + " " + tokens[2]);
 					}
+					// TODO: ask if these are right
+		        } else if (tokens[0].equals("view")){
+		        	// view username
+		        	hashUsers.get(tokens[1]).println("view " + tokens[1]);
+		        } else if (tokens[0].equals("creator")){
+		        	// creator username ChatNumber
+//		        	System.out.println("creator in serverProcess");
+		        	hashUsers.get(tokens[1]).println("creator " + hashChats.get(tokens[2]).getMembers().iterator().next());
 		        }
 			}
 		} catch (InterruptedException e) {

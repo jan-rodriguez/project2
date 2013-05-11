@@ -25,6 +25,8 @@ public class ClientSide {
 	private ClientRequest request = null;
 	private String username = null;
 	
+	private HistoryGUI historyGUI;
+	
 	/**
 	 * Constructor method for the Client class.
 	 * @param Socket, the socket used to establish the connection to the server
@@ -161,6 +163,13 @@ public class ClientSide {
 		conversations.put(id, conversation);
 	}
 	
+	/**
+	 * Open a new historyGUI
+	 */
+	public void showHistory(){
+		historyGUI = new HistoryGUI(this.getChatMap());
+	}
+	
 	public void updateHistory(String id, int index, String[] history) {
 		String historyString = "";
 		for (int i = index; i < history.length-1; i++) {
@@ -287,5 +296,10 @@ public class ClientSide {
 			}
 		});
     }
+
+	public void showCreator(String string) {
+		// TODO Auto-generated method stub
+		rootWindow.displayCreator(string);
+	}
     
 }
