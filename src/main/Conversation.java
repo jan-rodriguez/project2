@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -9,8 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -186,7 +185,6 @@ public class Conversation extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!InviteUsers.getText().equals("")){
-//					client.getProcessor().invite(chat, InviteUsers.getText());
 					client.getRequest().addLine("invite " + InviteUsers.getText() + " " + chat);
 					InviteUsers.setText("");
 				}
@@ -198,7 +196,6 @@ public class Conversation extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!InviteUsers.getText().equals("")){
-//					client.getProcessor().invite(chat, InviteUsers.getText());
 					client.getRequest().addLine("invite " + InviteUsers.getText() + " " + chat);
 					InviteUsers.setText("");
 				}

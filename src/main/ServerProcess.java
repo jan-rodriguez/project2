@@ -70,9 +70,7 @@ public class ServerProcess extends Thread {
 				        writer.println("create " + chat.getID());
 	            	}
 		        } else if (tokens[0].equals("post")) {
-		        	System.out.println("server chat # is " + tokens[tokens.length-1]);
 		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
-		        	System.out.println("server chat is " + chat);
 		        	Collection<String> members = chat.getMembers();
 		        	
 			        StringBuilder message = new StringBuilder("");
