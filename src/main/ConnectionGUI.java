@@ -1,11 +1,6 @@
 package main;
 
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -22,6 +17,7 @@ import javax.swing.GroupLayout.Alignment;
  */
 public class ConnectionGUI extends JFrame {
 
+	private static final long serialVersionUID = 2303658036405295138L;
 	private final JTextField IP;
 	private final JLabel IPlabel;
 	private final JTextField port;
@@ -30,7 +26,7 @@ public class ConnectionGUI extends JFrame {
 	private final JLabel error;
 	
 	/**
-	 * Construcor method for the ConnectionGUI
+	 * Constructor method for the ConnectionGUI
 	 */
 	public ConnectionGUI() {
 		//JComponents
@@ -90,35 +86,6 @@ public class ConnectionGUI extends JFrame {
         
         pack();
         setVisible(true);
-        
-        /**
-         * Action listener for submit button. Retrieves information in IP and 
-         * port TextFields and tries to connect to the server at that 
-         * location. Closes window if successful, otherwise resets TextFields.
-         */
-//		submit.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e){
-//				try {
-//					int portValue = Integer.parseInt(port.getText());
-//					if (portValue < 0 || portValue > 65535)
-//						throw new IOException();
-//					new Socket(IP.getText(), portValue);
-//					dispose();
-//				} catch (UnknownHostException ue) {
-//					IP.setText("");
-//					port.setText("");
-//					error.setText("Invalid IP.");
-//				} catch (IOException ioe) {
-//					IP.setText("");
-//					port.setText("");
-//					error.setText("Invalid port.");
-//				} catch (NumberFormatException ne) {
-//					IP.setText("");
-//					port.setText("");
-//					error.setText("Invalid port.");
-//				}
-//			}
-//		});
 	}
 	
 	public JButton getSubmit() {

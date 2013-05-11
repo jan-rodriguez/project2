@@ -87,11 +87,11 @@ public class Chat {
 	}
 	
 	public String getHistoryString() {
-		String result = "";
+		StringBuilder result = new StringBuilder("");
 		for (String line: history) {
-			result += line + " ";
+			result.append(line + " ");
 		}
-		return result;
+		return result.toString();
 	}
 	
 }
