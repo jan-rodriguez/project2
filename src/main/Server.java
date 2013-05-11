@@ -72,15 +72,14 @@ public class Server {
 	
 	        for (String line = in.readLine(); line != null; line=in.readLine()) {
 	        	processor.addLine(line, socket);
+	        	
+	        	if (line.split("\\s+")[0].equals("disconnect")) {
+	        		in.close();
+	        		break;
+	        	}
 	        }
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	
