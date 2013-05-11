@@ -15,6 +15,7 @@ import javax.swing.GroupLayout.Alignment;
  */
 public class UsernameGUI extends JFrame {
 
+	private static final long serialVersionUID = -8621144903321536569L;
 	private final JTextField username;
 	private final JLabel usernameLabel;
 	private final JLabel errorLabel;
