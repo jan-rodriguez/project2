@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ServerProcess extends Thread {
 	
-	private static ConcurrentHashMap<String, Socket> hashUsers = new ConcurrentHashMap<String, Socket>();
+	private static ConcurrentHashMap<String, PrintWriter> hashUsers = new ConcurrentHashMap<String, PrintWriter>();
 	private static ConcurrentHashMap<String, Chat> hashChats = new ConcurrentHashMap<String, Chat>();
 	private static AtomicInteger chatNumber = new AtomicInteger();
 	private final BlockingQueue<Object[]> queue;
@@ -39,25 +39,21 @@ public class ServerProcess extends Thread {
 	 * and runs the actions specified by the current action input.
 	 */
 	public void run() {
-		PrintWriter out = null;
 		try {
 			while (true) {
 				Object[] action = queue.take();
 				String[] tokens = ((String) action[0]).split("\\s+");
-				Socket socket = (Socket) action[1];
-				
-		        out = new PrintWriter(socket.getOutputStream(), true);
 				
 		        if (tokens[0].equals("username")) {
+		        	PrintWriter out = new PrintWriter(((Socket) action[1]).getOutputStream(), true);
 		            if (!hashUsers.containsKey(tokens[1])) {
-		            	hashUsers.put(tokens[1], socket);
+		            	hashUsers.put(tokens[1], out);
 		            	out.println("start " + getAllUsers() + " ? " + getAllChats());   
 
-		            	Collection<Socket> sockets = hashUsers.values();
-		            	for (Socket subSocket: sockets) {
-		            		if(!subSocket.equals(hashUsers.get(tokens[1]))){
-						        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-						        subOut.println("connect " + tokens[1]);
+		            	Collection<PrintWriter> writers = hashUsers.values();
+		            	for (PrintWriter writer: writers) {
+		            		if(!out.equals(writer)){
+						        writer.println("connect " + tokens[1]);
 		            		}
 		            	}
 		            } else {
@@ -68,16 +64,15 @@ public class ServerProcess extends Thread {
 		    		chatNumber.getAndIncrement();
 		    		chat.addMember(tokens[1]);
 		    		hashChats.put("" + chat.getID(), chat);	
-		    		out.println("new " + tokens[1] + " " + chat.getID());
-	            	Collection<Socket> sockets = hashUsers.values();
-	            	for (Socket subSocket: sockets) {
-				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-				        subOut.println("create " + chat.getID());
+		    		hashUsers.get(tokens[1]).println("new " + tokens[1] + " " + chat.getID());
+	            	Collection<PrintWriter> writers = hashUsers.values();
+	            	for (PrintWriter writer: writers) {
+				        writer.println("create " + chat.getID());
 	            	}
 		        } else if (tokens[0].equals("post")) {
-		        	System.out.println(tokens[tokens.length-1]);
+		        	System.out.println("server chat # is " + tokens[tokens.length-1]);
 		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
-		        	System.out.println(chat);
+		        	System.out.println("server chat is " + chat);
 		        	Collection<String> members = chat.getMembers();
 		        	
 			        StringBuilder message = new StringBuilder("");
@@ -86,9 +81,7 @@ public class ServerProcess extends Thread {
 			        }
 			        
 		        	for (String member: members) {
-		        		Socket subSocket = hashUsers.get(member);
-				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-				        subOut.println("post " + tokens[1] + " " + message + " " + tokens[tokens.length-1]);
+		        		hashUsers.get(member).println("post " + tokens[1] + " " + message + " " + tokens[tokens.length-1]);
 		        	}
 		        	
 		        	chat.addHistory(tokens[1], message.toString());
@@ -104,7 +97,6 @@ public class ServerProcess extends Thread {
 		        		if (chat.isMember(token)) 
 		        			continue;
 		        		
-		        		Socket subSocket = hashUsers.get(token);
 		        		chat.addMember(token);
 		        		
 		        		StringBuilder memberList = new StringBuilder("");
@@ -112,14 +104,11 @@ public class ServerProcess extends Thread {
 			        	for (String member: members) {
 			        		memberList.append(member + " ");
 			        		if (!member.equals(token)) {
-				        		Socket theSocket = hashUsers.get(member);
-				        		PrintWriter theOut = new PrintWriter(theSocket.getOutputStream(), true);
-						        theOut.println("added " + token + " " + chat.getID());
+				        		hashUsers.get(member).println("added " + token + " " + chat.getID());
 			        		}
 			        	}
-			        	
-			    		PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-				        subOut.println("new " + memberList + " ? " + chat.getHistoryString() + " " + chat.getID());
+
+			        	hashUsers.get(token).println("new " + memberList + " ? " + chat.getHistoryString() + " " + chat.getID());
 		        	}
 		        } else if (tokens[0].equals("disconnect")) {
 		        	for (int i = 2; i < tokens.length; i++) {
@@ -127,27 +116,23 @@ public class ServerProcess extends Thread {
 		        		chat.removeMember(tokens[1]);
 			        	Collection<String> members = chat.getMembers();
 			        	for (String member: members) {
-			        		Socket subSocket = hashUsers.get(member);
-					        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-					        subOut.println("leave " + tokens[1] + " " + chat.getID());
+			        		hashUsers.get(member).println("leave " + tokens[1] + " " + chat.getID());
 			        	}
 		        	}
-		        	Collection<Socket> sockets = hashUsers.values();
-		        	for (Socket subSocket: sockets) {
-				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-				        subOut.println("disconnect " + tokens[1]);
+		        	
+		        	Collection<PrintWriter> writers = hashUsers.values();
+		        	for (PrintWriter writer: writers) {
+		        		writer.println("disconnect " + tokens[1]);
 		        	}
-		        	out.close();
-		        	socket.close();
+		        	
+		        	hashUsers.get(tokens[1]).close();
 		        } else if (tokens[0].equals("leave")) {
 		        	Chat chat = hashChats.get(tokens[2]);
 					chat.removeMember(tokens[1]);
 
 					Collection<String> members = chat.getMembers();
 					for (String member: members) {
-						Socket subSocket = hashUsers.get(member);
-				        PrintWriter subOut = new PrintWriter(subSocket.getOutputStream(), true);
-				        subOut.println("leave " + tokens[1] + " " + tokens[2]);
+						hashUsers.get(member).println("leave " + tokens[1] + " " + tokens[2]);
 					}
 		        }
 			}
