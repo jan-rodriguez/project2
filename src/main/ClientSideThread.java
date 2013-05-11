@@ -30,7 +30,7 @@ public class ClientSideThread extends Thread {
 	        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	
 	        for (String line = in.readLine(); line != null; line=in.readLine()) {        
-				String[] tokens = line.split(" ");
+				String[] tokens = line.split("\\s+");
 	     
 				if (tokens[0].equals("connect")) {
 					client.addUser(tokens[1]);
