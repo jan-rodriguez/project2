@@ -50,23 +50,17 @@ public class AllUsersGUI extends JFrame {
     private JTextField Creator;
     private JButton Join;
     private DefaultListModel arrChats;
-//    private JButton Public;
-//    private JButton Private;
+    private JButton menuItemPublic;
+    private JButton menuItemHistory;
     private final ClientSide client;
     
-    private final JMenuBar menubar;
-    private final JMenu menu;
-    private final JMenu menu2;
-    private final JMenuItem menuItemPublic;		
-    private final JMenuItem menuItemHistory;		
-    private final JMenuItem menuItemPrivate;		
     private final JScrollPane ChatsPane;
     public AllUsersGUI(final ClientSide client){    	
     	this.client = client;
     	Container container = getContentPane();
 		setTitle(client.getUsername());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
-		setPreferredSize(new Dimension(250, 360));
+		setPreferredSize(new Dimension(250, 380));
 		setMinimumSize(new Dimension(230, 250));
 		// name all components
 		Header = new JLabel("Header");
@@ -89,50 +83,27 @@ public class AllUsersGUI extends JFrame {
 		
 		////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////// NEW FEATURES //////////////////////////////////
-		menubar = new JMenuBar();		
-		menubar.setMinimumSize(new Dimension(200, 25));		
-		menubar.setMaximumSize(new Dimension(200, 25));		
-		 //Build the first menu.		
-		menu = new JMenu("Create Chats");		
-		menuItemPublic = new JMenuItem("Create a public chat");		
-		menu.add(menuItemPublic);		
-		menuItemPrivate = new JMenuItem("Create a private chat");		
-		menu.add(menuItemPrivate);		
-		menubar.add(menu);		
-		  		
-		menu2 = new JMenu("View");		
-		menuItemHistory = new JMenuItem("History");		
+		menuItemHistory = new JButton("View History");		
 		menuItemHistory.addActionListener(new ActionListener(){		
 			public void actionPerformed(ActionEvent e){		
 				client.getRequest().addLine("view "+ client.getUsername());
 			}		
 		});
 		
-		menu2.add(menuItemHistory);		
-		menubar.add(menu2);		
+		menuItemPublic = new JButton("New Room");
 		menuItemPublic.addActionListener(new ActionListener(){		
 			public void actionPerformed(ActionEvent e){	
 				client.getRequest().addLine("new " + client.getUsername());
 			}		
 		});		
-        menuItemPrivate.addActionListener(new ActionListener(){		
-            public void actionPerformed(ActionEvent e){		
-            	client.getRequest().addLine("new " + client.getUsername());	        
-            }		
-        });    		
-			        
-		
-		
+				        
+				
 		// List of chats. For now just list 1, 2, 3
 		ChatsID = new JLabel("Chat Room No. ");
 		
 		
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
 		arrChats = new DefaultListModel();
-//		List<String> rooms = client.getpublicChats();
-//		for (int i = 0; i < rooms.size(); i++){
-//			arrChats.addElement(rooms.get(i));
-//		} 
 		
 		// Chats is a JList that contains arrChats DefaulListModel
 		Chats = new JList(arrChats);
@@ -185,20 +156,7 @@ public class AllUsersGUI extends JFrame {
 			}
 			
 		});
-		/////////////////////////// END OF NEW FEATURES ////////////////////////////////
-		////////////////////////////////////////////////////////////////////////////////
 
-//		Public = new JButton("Public Chat");
-//		Private = new JButton("Private Chat");
-//
-//		
-//		/// Private
-//		Private.addActionListener(new ActionListener(){
-//			public void actionPerformed(ActionEvent e){
-//				Chats.clearSelection();
-//				client.getRequest().addLine("new " + client.getUsername());
-//			}
-//		});
 	
 		this.addWindowListener(new WindowListener(){
 	
@@ -243,7 +201,10 @@ public class AllUsersGUI extends JFrame {
 
         layout.setVerticalGroup(
         		layout.createSequentialGroup()
-        			.addComponent(menubar)
+        		    .addGroup(layout.createParallelGroup(Alignment.CENTER)
+        					.addComponent(menuItemPublic)
+        					.addComponent(menuItemHistory)
+        					)
         			.addComponent(Header)
         			.addComponent(AllUsers)
         			.addGroup(layout.createParallelGroup(Alignment.CENTER)
@@ -268,7 +229,10 @@ public class AllUsersGUI extends JFrame {
 
         layout.setHorizontalGroup(
         		layout.createParallelGroup(Alignment.CENTER)
-        			.addComponent(menubar)
+        		    .addGroup(layout.createSequentialGroup()
+        					.addComponent(menuItemPublic)
+        					.addComponent(menuItemHistory)
+        					)
         			.addComponent(Header)
         			.addComponent(AllUsers)
         			.addGroup(layout.createSequentialGroup()

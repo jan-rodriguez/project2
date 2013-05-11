@@ -58,7 +58,9 @@ public class HistoryGUI  extends JFrame{
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				history.setText(ChatMap.get(Chats.getSelectedValue()).getHistory());
+				if (Chats.getSelectedValue() != null){
+					history.setText(ChatMap.get(Chats.getSelectedValue()).getHistory());
+				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {

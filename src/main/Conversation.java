@@ -45,6 +45,9 @@ public class Conversation extends JFrame{
     private JScrollPane ChatBox;
     private JButton Send;
     
+    private JLabel MessageHistoryLabel;
+    private JLabel ActiveUsersLabel;
+    
     // JScrollPane ChatHistory contains the textarea ChatMess. Messages are updated in ChatMess
     // JScrollPane ChatHistory is just a container
     private JScrollPane ChatHistory ;
@@ -71,9 +74,11 @@ public class Conversation extends JFrame{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // so that closing one conversation does not close others
 		
 		// Default size when opened
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(400, 350));
         
 		// name all components
+        MessageHistoryLabel = new JLabel("Messages");
+        ActiveUsersLabel = new JLabel("Active Users");
 		ChatLabel = new JLabel("ChatLabel");
 		ChatLabel.setName("ChatLabel");
 		
@@ -84,9 +89,11 @@ public class Conversation extends JFrame{
 		ClientChatArea.setWrapStyleWord(true);
 		ClientChatArea.setLineWrap(true);
 		
+		
 		ChatBox = new JScrollPane(ClientChatArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		ChatBox.setName("ChatBox");
+		ChatBox.setPreferredSize(new Dimension(200, 60));
 		
 		ChatMess = new JTextArea(6, 14);
 		ChatMess.setMargin(new Insets(5, 5, 5, 5));
@@ -118,7 +125,6 @@ public class Conversation extends JFrame{
 	    InviteUsers.setToolTipText("Type in usernames separated by commas. Then click Invite");
 	    InviteUsers.setMargin(new Insets(5, 5, 5, 5));
 	    InviteUsers.setName("InviteUsers");
-		
 	    
 	    // add all components to container
         container.add(ChatHistory);
@@ -234,7 +240,11 @@ public class Conversation extends JFrame{
         
         layout.setVerticalGroup(
         		layout.createSequentialGroup()
-        				.addGroup(layout.createParallelGroup()
+        		        .addGroup(layout.createParallelGroup(Alignment.CENTER)
+        						.addComponent(MessageHistoryLabel)
+        						.addComponent(ActiveUsersLabel)
+        						)
+        				.addGroup(layout.createParallelGroup(Alignment.CENTER)
         						.addComponent(ChatHistory)
         						.addComponent(ActiveUsers)
         						)
@@ -242,7 +252,7 @@ public class Conversation extends JFrame{
         						.addComponent(InviteUsers)
         						.addComponent(Invite)
         						)
-        				.addGroup(layout.createParallelGroup()
+        				.addGroup(layout.createParallelGroup(Alignment.CENTER)
         						.addComponent(ChatBox)
         						.addComponent(Send)
         						)
@@ -250,12 +260,14 @@ public class Conversation extends JFrame{
         
         layout.setHorizontalGroup(
         		layout.createSequentialGroup()
-        			.addGroup(layout.createParallelGroup()
+        			.addGroup(layout.createParallelGroup(Alignment.CENTER)
+        					.addComponent(MessageHistoryLabel)
         					.addComponent(ChatHistory)
         					.addComponent(InviteUsers)
         					.addComponent(ChatBox)
         					)
         			.addGroup(layout.createParallelGroup(Alignment.CENTER)
+        					.addComponent(ActiveUsersLabel)
         					.addComponent(ActiveUsers)
         					.addComponent(Invite)
         					.addComponent(Send)
