@@ -43,7 +43,7 @@ public class ChatTest {
 		out.add("chau: hello");
 		out.add("chau: bye");
 		Iterator<String> testit = out.iterator();
-		for(String mem: test.gethistory()){
+		for(String mem: test.getHistory()){
 			assertTrue(mem.equals(testit.next()));
 		}
 	}

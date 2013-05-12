@@ -7,8 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Client server runner. Keeps track of all of the current Clients
- * connected to the Server. Connects and disconnects the clients.
+ * Server for the chat. Has a server socket to which clients can connect and a
+ * ServerProcess thread that handles client requests.
  */
 public class Server {
 	
@@ -16,7 +16,7 @@ public class Server {
 	private static ServerProcess processor;
 
 	/**
-	 * Constructor method for the Server .
+	 * Constructor method for the Server. Starts ServerProcess thread.
 	 * @param port - integer specifying the port the SeverSocket where the server socket will be created.
 	 * @throws IOException
 	 */
@@ -27,11 +27,11 @@ public class Server {
 	}
 	
 	/**
-     * Run the server, listening for client connections and handling them.
+     * Runs the server, listening for client connections and handling them.
      * When a client connects, creates a new thread for the client to run in. 
      * Never returns unless an exception is thrown.
      * @throws IOException if the main server socket is broken
-     * (IOExceptions from individual clients do *not* terminate serve()).
+     * (IOExceptions from individual clients do *not* terminate connect()).
      */
 	public void connect() throws IOException {
 		while(true) {
@@ -58,21 +58,20 @@ public class Server {
 	}
 	
 	/**
-	 * Static method called from the client to disconnect a client from the server,
-	 * and close the clients socket. Also removes them from the server's hashUsers. 
-	 * removes client from all of it's active chats, and updates all the other clients
-	 * GUI's to show that the client has disconnected.
-	 * @param client - Client which will be disconnected from the server
+	 * Method that reads input from the client socket and handles their
+	 * requests by sending them to the ServerProcess thread. Returns when 
+	 * the client connection is terminated.
+	 * @param socket - Socket of the client with whom we are communicating
 	 * @throws IOException
 	 */
 	public void handleConnection(Socket socket) {
 		BufferedReader in = null;
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	
+			//Read client input and pass on to the ServerProcess thread
 	        for (String line = in.readLine(); line != null; line=in.readLine()) {
 	        	processor.addLine(line, socket);
-	        	
+	        	//if client disconnects close reader, break
 	        	if (line.split("\\s+")[0].equals("disconnect")) {
 	        		in.close();
 	        		break;
@@ -84,23 +83,24 @@ public class Server {
 	}
 	
     /**
-     * Start a chat server from the given arguments. Creates a server at the
-     * port specified by first arguemnt.
-     * @param String[] args - args[0] must be a valid integer
+     * Creates a server at the port specified by first arguemnt.
+     * @param String[] args - args[0] must be a valid port integer
      */
     public static void main(String[] args) {
     	Server server = null;
     	try {
+    		//validates port number in args[0]
     		Integer port = Integer.parseInt(args[0]);
     		if (port > 65535 || port < 0)
     			throw new NumberFormatException("Invalid port number.");
+    		//creates server
 			server = new Server(port);
     	} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	
+    	//server starts listening for connections
     	if (server != null) {
 			try {
 				server.connect();

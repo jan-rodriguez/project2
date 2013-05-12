@@ -13,7 +13,6 @@ import javax.swing.GroupLayout.Alignment;
  * <code> public class extends JFrame</code>
  * Class used to get the IP address and port number specified by the client to
  * connect to the server specified by the IP address and port number.
- *
  */
 public class ConnectionGUI extends JFrame {
 
@@ -88,6 +87,9 @@ public class ConnectionGUI extends JFrame {
         setVisible(true);
 	}
 	
+	/**
+	 * Getter methods
+	 */
 	public JButton getSubmit() {
 		return submit;
 	}

@@ -10,8 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
 
 /**
- * GUI used to get possible username from a Client and submit it to the server.
- *
+ * GUI used in client selection of a username.
  */
 public class UsernameGUI extends JFrame {
 

@@ -6,14 +6,19 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * ClientRequest handles requests made by the client to the server.
+ * They are stored in a BlockingQueue and then sent one by one
+ * through the socket, using a PrintWriter.
+ */
 public class ClientRequest extends Thread {
 
 	private final BlockingQueue<String> queue;
-	private final ClientSide client;
 	private PrintWriter writer = null;
+	private final ClientSide client;
 
 	/**
-	 * Constructor method for ServerProcess. Instantiates the blocking queue.
+	 * Constructor method for ClientRequest. Instantiates the blocking queue and PrintWriter.
 	 */
 	public ClientRequest(Socket socket, ClientSide client) {
 		this.queue = new LinkedBlockingQueue<String>();
@@ -28,8 +33,8 @@ public class ClientRequest extends Thread {
 	
 	@Override
 	/**
-	 * Run method for the ServerProcess. Accesses actions from the blocking queue
-	 * and runs the actions specified by the current action input.
+	 * Run method for the ClientRequest. Accesses requests from the blocking queue
+	 * and writes them to the socket.
 	 */
 	public void run() {
         while (true) {
@@ -43,10 +48,17 @@ public class ClientRequest extends Thread {
         }
 	}
 	
+	/**
+	 * Adds a request to the blocking queue.
+	 * @param line - a string representing a client request
+	 */
 	public void addLine(String line) {
 		queue.offer(line);
 	}
 
+	/**
+	 * Getter function
+	 */
 	public ClientSide getClient() {
 		return client;
 	}

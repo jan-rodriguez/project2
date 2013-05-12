@@ -268,7 +268,7 @@ public class AllUsersGUI extends JFrame {
 	 * @param clientsName - Collection<String> of all clients currently connected to the server
 	 */
 	
-	public void updateUsers(List<String> clientsName){
+	public void updateUsers(Collection<String> clientsName){
 		StringBuilder str = new StringBuilder();
 		for (String c: clientsName){
 			str.append(c + "\r\n");
@@ -283,11 +283,11 @@ public class AllUsersGUI extends JFrame {
 	 * 
 	 * @param rooms: passed from serverprocessor
 	 */
-	public void updateChatRooms(List<String> rooms){
+	public void updateChatRooms(Collection<String> rooms){
 		arrChats.clear();
 		// copy each element in rooms and convert to string
-		for (int i = 0; i < rooms.size(); i++){
-			arrChats.addElement(rooms.get(i).toString());
+		for (String room: rooms) {
+			arrChats.addElement(room);
 		}
 	}
 

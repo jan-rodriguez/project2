@@ -10,13 +10,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * serverProcess is a thread of server. It gets started when server is created
+ * ServerProcess is initialized when server is created. It handles the clients' requests
+ * by storing them in a blocking queue and then addressing them one by one. 
+ * 
  * BlockingQueue: receives chat actions from the GUI (see GUIs and Action class)
  * AtomicInteger chatNumber: used to get each new chat a unique id
- * hashChats: a ConcurrentHashMap to map chatNumber to Chat
- * <p>
- * Functions: addPublicChat, addPrivateChat, newChat, leaveConversation,
- * 			  invite, sendMessage, notMember
+ * hashUsers: a ConcurrentHashMap to map username to Socket
+ * hashChats: a ConcurrentHashMap to map chat id to Chat
  */
 public class ServerProcess extends Thread {
 	
@@ -35,7 +35,7 @@ public class ServerProcess extends Thread {
 	@Override
 	/**
 	 * Run method for the ServerProcess. Accesses actions from the blocking queue
-	 * and runs the actions specified by the current action input.
+	 * and takes the actions specified by the current action input.
 	 */
 	public void run() {
 		try {
@@ -167,15 +167,15 @@ public class ServerProcess extends Thread {
 	
 	/**
 	 * Add Action to the BlockingQueue, with the given text and socket.
-	 * @param line
-	 * @param socket
+	 * @param line - message being added, a string
+	 * @param socket - socket through which message was received
 	 */
 	public void addLine(String line, Socket socket) {
 		queue.offer(new Action(line, socket));
 	}
 	
 	/**
-	 * Getter for users, chats as string
+	 * Getter for users, chats as strings.
 	 */
 	public String getAllUsers() {
     	Collection<String> users = hashUsers.keySet();

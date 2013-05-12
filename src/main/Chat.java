@@ -7,11 +7,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Chat represents a conversation, used to keep track of current users
- * id: each chat has a unique AtomicInteger id
  * members: a synchronizedCollection of current users
- * <p>
- * Functions: addMember(), removeMember(), getMemberCount(), 
- * 			  getMembers(), isMember(), getID()
+ * history: a synchronizedCollection of all messages sent
+ * creator: a string representing the username of the chat creator
+ * id: each chat has a unique integer id
  */
 public class Chat {
 	
@@ -19,9 +18,11 @@ public class Chat {
 	private Collection<String> members;
 	private final String creator;
 	private final int id;
+	
 	/**
 	 * Constructor method for Chat
 	 * @param id - AtomicInteger representing unique id assigned to a chat
+	 * @param creator - username of chat creator, a string
 	 */
 	public Chat(AtomicInteger id, String creator) {
 		history = Collections.synchronizedCollection( new ArrayList<String>() );
@@ -32,7 +33,7 @@ public class Chat {
 	
 	/**
 	 * Method used to add clients to the chat
-	 * @param client - Client that is added to the chat
+	 * @param username - Username of client that is added to the chat
 	 */
 	public void addMember(String username) {
 		members.add(username);
@@ -40,7 +41,7 @@ public class Chat {
 
 	/**
 	 * Method used to remove clients from the chat
-	 * @param client - Client that is removed form the chat
+	 * @param username - Username of client that is removed form the chat
 	 */
 	public void removeMember(String username) {
 		members.remove(username);
@@ -63,6 +64,11 @@ public class Chat {
 		return members.contains(username);
 	}
 	
+	/**
+	 * Method to add a sender and message to the chat history
+	 * @param sender - username of person sending message, a string
+	 * @param message - message sent, a string
+	 */
 	public void addHistory(String sender, String message) {
 		history.add(sender.trim() + ": " + message.trim());
 	}
@@ -74,7 +80,7 @@ public class Chat {
 		return members;
 	}
 	
-	public Collection<String> gethistory() {
+	public Collection<String> getHistory() {
 		return history;
 	}
 	
