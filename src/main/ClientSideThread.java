@@ -46,8 +46,8 @@ public class ClientSideThread extends Thread {
 				} else if (tokens[0].equals("create")) {
 					// create chat
 					client.addChatRoom(tokens[1]);
-				} else if (tokens[0].equals("added")) {
-					// added username chat
+				} else if (tokens[0].equals("add")) {
+					// add username chat
 					client.addToChat(tokens[1], tokens[2]);
 				} else if (tokens[0].equals("new")) {
 					// new username* ? (username: message)* chat
@@ -80,9 +80,6 @@ public class ClientSideThread extends Thread {
 				} else if (tokens[0].equals("leave")) {
 					// leave username chat
 					client.removeFromChat(tokens[1], tokens[2]);
-				} else if(tokens[0].equals("view")) {
-					// view username
-					client.showHistory();
 				} else if(tokens[0].equals("creator")) {
 					// creator username
 					client.showCreator(tokens[1]);

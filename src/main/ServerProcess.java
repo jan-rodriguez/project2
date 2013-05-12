@@ -114,7 +114,7 @@ public class ServerProcess extends Thread {
 			        		memberList.append(member + " ");
 			        		//notify all chat members of user's addition
 			        		if (!member.equals(token)) {
-				        		hashUsers.get(member).println("added " + token + " " + chat.getID());
+				        		hashUsers.get(member).println("add " + token + " " + chat.getID());
 			        		}
 			        	}
 			        	//notify user of new chat, current members and history
@@ -150,9 +150,6 @@ public class ServerProcess extends Thread {
 					for (String member: members) {
 						hashUsers.get(member).println("leave " + tokens[1] + " " + tokens[2]);
 					}
-		        } else if (tokens[0].equals("view")){
-		        	// view username
-		        	hashUsers.get(tokens[1]).println("view " + tokens[1]);
 		        } else if (tokens[0].equals("creator")){
 		        	// creator username ChatNumber
 		        	hashUsers.get(tokens[1]).println("creator " + hashChats.get(tokens[2]).getCreator());

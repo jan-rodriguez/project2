@@ -86,7 +86,7 @@ public class AllUsersGUI extends JFrame {
 		menuItemHistory = new JButton("View History");		
 		menuItemHistory.addActionListener(new ActionListener(){		
 			public void actionPerformed(ActionEvent e){		
-				client.getRequest().addLine("view "+ client.getUsername());
+				client.showHistory();
 			}		
 		});
 		
@@ -116,7 +116,6 @@ public class AllUsersGUI extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-//	        	System.out.println("creator in AllUsersGUI");
 				if (Chats.getSelectedValue()!= null){
 					client.getRequest().addLine("creator " + client.getUsername() + " " + Chats.getSelectedValue());
 				}
