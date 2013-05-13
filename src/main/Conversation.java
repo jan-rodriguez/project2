@@ -69,7 +69,7 @@ public class Conversation extends JFrame{
 		this.client = client;
 		Container container = getContentPane();
 		container.setBackground(Color.LIGHT_GRAY);
-		setTitle(client.getUsername());
+		setTitle(client.getUsername() + " - Chat Room No. " + chat);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // so that closing one conversation does not close others
 		

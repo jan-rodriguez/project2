@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
@@ -37,19 +38,25 @@ public class HistoryGUI  extends JFrame{
 		Container container = getContentPane();
 		setTitle("Chats as of " + (new Date()).toString());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
-		setPreferredSize(new Dimension(380, 200));
-		setMinimumSize(new Dimension(380, 250));
+		setPreferredSize(new Dimension(380, 230));
+		setMinimumSize(new Dimension(380, 230));
+//		setMaximumSize(new Dimension(380, 200));
+//		setSize(new Dimension(500, 200));
+//		setResizable(false);
 		
 		ChatsID = new JLabel("Chat Room No. ");
 		Message = new JLabel("History");
 		history = new JTextArea(8, 4);
+		history.setWrapStyleWord(true);
+		history.setMargin(new Insets(5, 5, 5, 5));
+		history.setLineWrap(true);
+		history.setEnabled(false);
 		messPane = new JScrollPane(history, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
 		Set<String> ids = ChatMap.keySet();
 
 		arrChats = ids.toArray();
-		System.out.println(arrChats.toString() + " line 48");
 		// Chats is a JList that contains arrChats DefaulListModel
 		
 		Chats = new JList(arrChats);
@@ -77,7 +84,7 @@ public class HistoryGUI  extends JFrame{
 		});
 		historyPane = new JScrollPane(Chats, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 	            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		historyPane.setMaximumSize(new Dimension(30, 160));
+		historyPane.setMaximumSize(new Dimension(30, 170));
 		
 //////////BEGIN Layout    ///////////////////
      GroupLayout layout = new GroupLayout(getContentPane());
