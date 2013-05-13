@@ -1,6 +1,8 @@
 package main;
 
 import java.awt.Container;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -19,8 +21,11 @@ public class UsernameGUI extends JFrame {
 	private final JLabel usernameLabel;
 	private final JLabel errorLabel;
 	private final JButton submit;
+	private final ClientSide client;
 
-	public UsernameGUI() {		
+	public UsernameGUI(final ClientSide client) {	
+		this.client = client; 
+		
 		//JComponents
 		usernameLabel = new JLabel("Enter alphanumeric username:");
 		usernameLabel.setName("usernameLabel");
@@ -66,6 +71,7 @@ public class UsernameGUI extends JFrame {
         
         pack();
         setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	/**
@@ -95,6 +101,10 @@ public class UsernameGUI extends JFrame {
 	
 	public JLabel getError() {
 		return errorLabel;
+	}
+
+	public ClientSide getClient() {
+		return client;
 	}
 
 }

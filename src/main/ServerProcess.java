@@ -44,7 +44,7 @@ public class ServerProcess extends Thread {
 				String[] tokens = action.getText().split("\\s+");
 				
 		        if (tokens[0].equals("username")) {
-		        	// username tempusername
+		        	// username username
 		        	PrintWriter out = new PrintWriter(action.getSocket().getOutputStream(), true);
 		        	//add user, writer to hashUsers
 		            if (!hashUsers.containsKey(tokens[1])) {
@@ -150,7 +150,7 @@ public class ServerProcess extends Thread {
 					for (String member: members) {
 						hashUsers.get(member).println("leave " + tokens[1] + " " + tokens[2]);
 					}
-		        } else if (tokens[0].equals("creator")){
+		        } else if (tokens[0].equals("creator")) {
 		        	// creator username ChatNumber
 		        	hashUsers.get(tokens[1]).println("creator " + hashChats.get(tokens[2]).getCreator());
 		        }
