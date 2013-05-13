@@ -46,7 +46,7 @@ public class ClientSide {
 		this.socket = socket;
 		
 		//usernameGUI for client to select his/her username
-		UsernameGUI usernameGUI = new UsernameGUI();
+		UsernameGUI usernameGUI = new UsernameGUI(this);
         usernameGUI.getSubmit().addActionListener(new SubmitUsername(usernameGUI));
         usernameGUI.getUsername().addActionListener(new SubmitUsername(usernameGUI));
 	}
