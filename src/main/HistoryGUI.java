@@ -20,7 +20,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.Timer;
-
+/**
+ * HistoryGUI pops up when user clicks on View History button in AllUsersGUI
+ * 
+ * The GUI has a HashMap that maps String ChatNumber to a conversation
+ * When a user selects a ChatNumber from a JList, the history of the 
+ * corresponding conversation will show up in a text area.
+ * The ChatNumbers that are shown up are the ones that are active
+ * by the time the user clicks View History, i.e. chat rooms that are created
+ * after that point will not show up in History GUI. 
+ * However, the history of chat rooms in the History GUI will be updated 
+ * if users reselect them. For example, if a user sees room 0, then room 1,
+ * and back to room 0 again. If during that time room 0 is updated with new messages
+ * then the new messages will show up when the user sees room 0 the second time. 
+ *
+ * Components: 2 JLabels to show ChatNumber and history area
+ * 			   1 JScrollPane that contains a JList. This JList stores ChatNumber
+ * 			   1 JScrollPane that contains a JTextArea to show histories
+ */
 public class HistoryGUI  extends JFrame{
 	private JTextArea history;
 	private JScrollPane historyPane;
@@ -28,22 +45,20 @@ public class HistoryGUI  extends JFrame{
 	private JLabel ChatsID;
 	private JLabel Message;
 	private JScrollPane messPane;
-
 	private Object[] arrChats;
 	private final ConcurrentHashMap<String, Conversation> ChatMap;
 	
 	public HistoryGUI(final ConcurrentHashMap<String, Conversation> ChatMap) {
 		this.ChatMap = ChatMap;
 		
+		// container settings
 		Container container = getContentPane();
 		setTitle("Chats as of " + (new Date()).toString());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
 		setPreferredSize(new Dimension(380, 230));
 		setMinimumSize(new Dimension(380, 230));
-//		setMaximumSize(new Dimension(380, 200));
-//		setSize(new Dimension(500, 200));
-//		setResizable(false);
 		
+		// initialize components
 		ChatsID = new JLabel("Chat Room No. ");
 		Message = new JLabel("History");
 		history = new JTextArea(8, 4);
@@ -55,17 +70,17 @@ public class HistoryGUI  extends JFrame{
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// arrChats is a DefaultListModel that stores chat room # of active public chats
 		Set<String> ids = ChatMap.keySet();
-
 		arrChats = ids.toArray();
-		// Chats is a JList that contains arrChats DefaulListModel
 		
+		// Chats is a JList that contains arrChats DefaulListModel
 		Chats = new JList(arrChats);
 		Chats.setName("Chats");
+		// Add mouse listener so that users can select rooms and see history
 		Chats.addMouseListener(new MouseListener(){
-			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (Chats.getSelectedValue() != null){
+					// get history from the conversation with selected id
 					history.setText(ChatMap.get(Chats.getSelectedValue()).getHistory());
 				}
 			}
@@ -86,7 +101,7 @@ public class HistoryGUI  extends JFrame{
 	            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		historyPane.setMaximumSize(new Dimension(30, 170));
 		
-//////////BEGIN Layout    ///////////////////
+		//////////BEGIN Layout    ///////////////////
      GroupLayout layout = new GroupLayout(getContentPane());
      container.setLayout(layout);
      

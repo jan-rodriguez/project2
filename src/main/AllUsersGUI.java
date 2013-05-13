@@ -35,7 +35,9 @@ import javax.swing.text.DefaultCaret;
  * Components: 1 text area showing all "online" users
  * 			   1 button to create a new conversation
  * <p>
- * Functions: updateUsers(): display online users, updateChatRooms(): display public chat rooms
+ * Functions: 	updateUsers(): display online users
+ * 				updateChatRooms(): display public chat rooms
+ * 				displayCreator()
  * 
  *
  */
@@ -212,19 +214,12 @@ public class AllUsersGUI extends JFrame {
         					.addComponent(CreatorLabel)
         					)
         			.addGroup(layout.createParallelGroup()
-//        					.addComponent(Chats)
         					.addComponent(ChatsPane)
         					.addGroup(layout.createSequentialGroup()
         							.addComponent(Creator)
         							.addComponent(Join)
         							)
-        					
         					)
-        			
-//        			.addGroup(layout.createParallelGroup()
-//        					.addComponent(Public)
-//        					.addComponent(Private)
-//        					)
         		);
 
         layout.setHorizontalGroup(
@@ -249,20 +244,15 @@ public class AllUsersGUI extends JFrame {
         									)
         							)
         					)
-//        			.addGroup(layout.createSequentialGroup()
-//        					.addComponent(Public)
-//        					.addComponent(Private)
-//        					)	
         		);
         
         pack();
         ///////////////// END of layout ////////////////////
-        
         setVisible(true);
     }
     
 	/**
-	 * updateUsers panel. Itarates through the given list of client names and adds them to the 
+	 * updateUsers panel. Iterates through the given list of client names and adds them to the 
 	 * GUI. Called when a client connects or disconnects from the server.
 	 * @param clientsName - Collection<String> of all clients currently connected to the server
 	 */
@@ -296,6 +286,10 @@ public class AllUsersGUI extends JFrame {
 
     public static void main(String[] args) {}
 
+    /**
+     * Display the creator of selected Chat Room
+     * @param string
+     */
 	public void displayCreator(String string) {
 		// TODO Auto-generated method stub
 		Creator.setText(string);
