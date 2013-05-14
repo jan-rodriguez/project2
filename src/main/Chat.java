@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * history: a synchronizedCollection of all messages sent
  * creator: a string representing the username of the chat creator
  * id: each chat has a unique integer id
+ * 
+ * 
  */
 public class Chat {
 	
@@ -80,7 +82,7 @@ public class Chat {
 		return members;
 	}
 	
-	public Collection<String> getHistory() {
+	public Collection<String> getHistoryFromChat() {
 		return history;
 	}
 	

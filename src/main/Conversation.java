@@ -25,32 +25,30 @@ import javax.swing.text.DefaultCaret;
 
 /**
  * GUI of a conversation. A conversation is created when 
- * "Create A New Conversation button" in AllUsersGUI is clicked
+ * "New Room" button in AllUsersGUI is clicked
  * 
  * Components: 4 text areas to show all chat history. current active users, 
  * 				 for typing messages, and for typing names to invite
  * 			   2 buttons: Invite and Send 
+ * 			   2 JLabels 
  * 
- * Actions on this GUI are sent to serverProcess' queue
+ * Actions on this GUI are sent to serverProcess' queue via client' requests
  * Functions: updateChatMess: update new messages in chat history area;
  * 			  updateActive: update list of active users
+ * 			  getHistory: gives HistoryGUI the content of the conversation
+ * 			  setHistory: updates current content of the conversation
  */
 
 public class Conversation extends JFrame{
-	// list of components here
-
 	private static final long serialVersionUID = 1L;
 	// Chat box and its label and send button
 	private JLabel ChatLabel;
     private JTextArea ClientChatArea; 
     private JScrollPane ChatBox;
     private JButton Send;
-    
     private JLabel MessageHistoryLabel;
     private JLabel ActiveUsersLabel;
-    
     // JScrollPane ChatHistory contains the textarea ChatMess. Messages are updated in ChatMess
-    // JScrollPane ChatHistory is just a container
     private JScrollPane ChatHistory ;
     private JTextArea ChatMess;
     
@@ -70,7 +68,7 @@ public class Conversation extends JFrame{
 		this.client = client;
 		Container container = getContentPane();
 		container.setBackground(Color.LIGHT_GRAY);
-		setTitle(client.getUsername());
+		setTitle(client.getUsername() + " - Chat Room No. " + chat);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // so that closing one conversation does not close others
 		
@@ -142,8 +140,9 @@ public class Conversation extends JFrame{
 		((DefaultCaret) ActiveUsersList.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
         /**
-         * Send message : add the current message in the ClientChat area to the
-         *  serverProcess queue is sent when either click Send button or press Enter in ClientChatArea
+         *  Post message : add the current message in the ClientChat area.
+         *  A request to the server is sent when either click Send button or 
+         *  press Enter in ClientChatArea
          */
         Send.addActionListener(new ActionListener(){
 
@@ -158,7 +157,6 @@ public class Conversation extends JFrame{
         });
         
         ClientChatArea.addKeyListener(new KeyListener(){
-
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				if ((arg0.getKeyCode() == KeyEvent.VK_ENTER)) {
@@ -168,20 +166,17 @@ public class Conversation extends JFrame{
 						ClientChatArea.setText("");
 					}
 				}
-				
 			}
-
 			@Override
 			public void keyPressed(KeyEvent e) {
 			}
 			@Override
 			public void keyTyped(KeyEvent e) {
 			}
-        	
         });
         
         /**
-         * Send invite: adds the invite method to the ServerProcessor blocking queue
+         * Send invite: send the invite request to the Server
          * Called when the client either presses enter or clicks the invite button
          */
         Invite.addActionListener(new ActionListener(){
@@ -194,7 +189,6 @@ public class Conversation extends JFrame{
 			}
         	
         });
-        
         InviteUsers.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -203,11 +197,11 @@ public class Conversation extends JFrame{
 					InviteUsers.setText("");
 				}
 			}
-        	
         });
         
+        // Closing the conversation GUI means to leave this chat room
+        // a "leave" request is sent to the server
 		this.addWindowListener(new WindowListener(){
-
 			@Override
 			public void windowActivated(WindowEvent arg0) {
 			}
@@ -231,14 +225,12 @@ public class Conversation extends JFrame{
 			public void windowOpened(WindowEvent arg0) {
 			}
 		});
-
         
         ////////// BEGIN Layout  ///////////////////
         GroupLayout layout = new GroupLayout(getContentPane());
         container.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-        
         layout.setVerticalGroup(
         		layout.createSequentialGroup()
         		        .addGroup(layout.createParallelGroup(Alignment.CENTER)
@@ -273,12 +265,10 @@ public class Conversation extends JFrame{
         					.addComponent(Invite)
         					.addComponent(Send)
         					)		
-        		
         		);
         //Display the window.
         pack();
         ///////////////// END of layout ////////////////////
-        
         setVisible(true);
 	}
 	
@@ -310,10 +300,19 @@ public class Conversation extends JFrame{
 		ActiveUsersList.setText(str.toString());
 	}
 	
+	/**
+	 * setHistory update ChatMess with a new String history
+	 * get called by ClientSide
+	 * 
+	 */
 	public void setHistory(String history) {
 		ChatMess.append(history);
 	}
 	
+	/**
+	 * get called by HistoryGUI to show all messages in the conversation
+	 * @return String message
+	 */
 	public String getHistory(){
 		return ChatMess.getText();
 	}
