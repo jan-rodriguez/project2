@@ -9,21 +9,20 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;		
-import javax.swing.JMenuBar;		
-import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
 
@@ -263,13 +262,15 @@ public class AllUsersGUI extends JFrame {
     
 	/**
 	 * updateUsers panel. Itarates through the given list of client names and adds them to the 
-	 * GUI. Called when a client connects or disconnects from the server.
+	 * GUI in alphabetical order. Called when a client connects or disconnects from the server.
 	 * @param clientsName - Collection<String> of all clients currently connected to the server
 	 */
 	
-	public void updateUsers(Collection<String> clientsName){
+	public void updateUsers(Collection<String> clientsName) {
+		List<String> sortedClients = new ArrayList<String>(clientsName);
+		Collections.sort(sortedClients);
 		StringBuilder str = new StringBuilder();
-		for (String c: clientsName){
+		for (String c: sortedClients){
 			str.append(c + "\r\n");
 		}
 		Usernames.setText(str.toString());

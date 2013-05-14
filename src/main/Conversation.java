@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -296,11 +297,12 @@ public class Conversation extends JFrame{
 	
 	/**
 	 * updateActive gets called when a client joins or leaves the chat
-	 * take in list of clients, get names of them and
-	 * repaint ActiveUsersList area
+	 * take in list of clients, get names of them and repaint
+	 * ActiveUsersList area with clients in alphabetical order.
 	 * @param clients - list of all the clients to be updated
 	 */
 	public void updateActive(List<String> clients) {
+		Collections.sort(clients);
 		StringBuilder str = new StringBuilder();
 		for (String c: clients) {
 			str.append(c + "\r\n");
