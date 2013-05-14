@@ -167,10 +167,6 @@ public class ServerProcess extends Thread {
 		queue.offer(new Action(line, writer));
 	}
 	
-	public boolean isQueueEmpty() {
-		return queue.isEmpty();
-	}
-	
 	/**
 	 * Getter for users, chats as strings.
 	 */
