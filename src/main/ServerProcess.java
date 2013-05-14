@@ -1,8 +1,6 @@
 package main;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +43,7 @@ public class ServerProcess extends Thread {
 				
 		        if (tokens[0].equals("username")) {
 		        	// username username
-		        	PrintWriter out = new PrintWriter(action.getSocket().getOutputStream(), true);
+		        	PrintWriter out = action.getWriter();
 		        	//add user, writer to hashUsers
 		            if (!hashUsers.containsKey(tokens[1])) {
 		            	hashUsers.put(tokens[1], out);
@@ -157,8 +155,6 @@ public class ServerProcess extends Thread {
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -167,8 +163,12 @@ public class ServerProcess extends Thread {
 	 * @param line - message being added, a string
 	 * @param socket - socket through which message was received
 	 */
-	public void addLine(String line, Socket socket) {
-		queue.offer(new Action(line, socket));
+	public void addLine(String line, PrintWriter writer) {
+		queue.offer(new Action(line, writer));
+	}
+	
+	public boolean isQueueEmpty() {
+		return queue.isEmpty();
 	}
 	
 	/**

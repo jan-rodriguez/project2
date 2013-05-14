@@ -60,7 +60,7 @@ public class AllUsersGUI extends JFrame {
     	this.client = client;
     	Container container = getContentPane();
 		setTitle(client.getUsername());
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	// might want to use EXIT_ON_CLOSE to close all conversations
 		setPreferredSize(new Dimension(250, 380));
 		setMinimumSize(new Dimension(230, 250));
 		// name all components

@@ -3,6 +3,7 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -70,7 +71,7 @@ public class Server {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			//Read client input and pass on to the ServerProcess thread
 	        for (String line = in.readLine(); line != null; line=in.readLine()) {
-	        	processor.addLine(line, socket);
+	        	processor.addLine(line, new PrintWriter(socket.getOutputStream(), true));
 	        	//if client disconnects close reader, break
 	        	if (line.split("\\s+")[0].equals("disconnect")) {
 	        		in.close();

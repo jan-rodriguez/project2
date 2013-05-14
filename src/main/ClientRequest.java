@@ -1,8 +1,6 @@
 package main;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -20,15 +18,10 @@ public class ClientRequest extends Thread {
 	/**
 	 * Constructor method for ClientRequest. Instantiates the blocking queue and PrintWriter.
 	 */
-	public ClientRequest(Socket socket, ClientSide client) {
+	public ClientRequest(PrintWriter writer, ClientSide client) {
 		this.queue = new LinkedBlockingQueue<String>();
 		this.client = client;
-		
-		try {
-			this.writer = new PrintWriter(socket.getOutputStream(), true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.writer = writer;
 	}
 	
 	@Override

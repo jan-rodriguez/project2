@@ -1,6 +1,6 @@
 package main;
 
-import java.net.Socket;
+import java.io.PrintWriter;
 
 /**
  * Action class represents a request containing a text message and
@@ -9,7 +9,7 @@ import java.net.Socket;
  */
 public class Action {
 
-	private final Socket socket;
+	private final PrintWriter writer;
 	private final String text;
 
 	/**
@@ -17,16 +17,16 @@ public class Action {
 	 * @param text
 	 * @param socket
 	 */
-	public Action(String text, Socket socket) {
-		this.socket = socket;
+	public Action(String text, PrintWriter writer) {
+		this.writer = writer;
 		this.text = text;
 	}
 	
 	/**
 	 * Getter methods
 	 */
-	public Socket getSocket() {
-		return socket;
+	public PrintWriter getWriter() {
+		return writer;
 	}
 	
 	public String getText() {

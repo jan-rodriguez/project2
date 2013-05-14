@@ -109,16 +109,15 @@ public class ClientSide {
 		        	usernameGUI.dispose();
 		    		
 		        	//Start ClientRequest, ClientSideThread
-		        	thread = new ClientSideThread(socket, ClientSide.this);
+		        	thread = new ClientSideThread(new BufferedReader(new InputStreamReader(socket.getInputStream())), ClientSide.this);
 		    		thread.start();
-		    		request = new ClientRequest(socket, ClientSide.this);
+		    		request = new ClientRequest(new PrintWriter(socket.getOutputStream(), true), ClientSide.this);
 		    		request.start();	
 	    		} else {
 	    			//prompt for another username
 	    			usernameGUI.alertDuplicate();
 	    			return;
 	    		}
-		        
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
