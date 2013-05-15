@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import chat.Conversation;
-import chat.HistoryGUI;
 
 import lobby.AllUsersGUI;
+import lobby.HistoryGUI;
 
 /**
  * ClientSide is the client program for the chat. It runs the connection GUI, then the

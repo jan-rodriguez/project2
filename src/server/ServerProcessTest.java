@@ -23,8 +23,8 @@ public class ServerProcessTest {
 		
 		try {
 			//writer and reader for file
-			PrintWriter writer = new PrintWriter(new FileWriter("test.txt", true));
-			BufferedReader in = new BufferedReader(new FileReader("test.txt"));
+			PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", true));
+			BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
 
 			//command through server processor
 			processor.addLine("username gabo", writer);
@@ -49,7 +49,7 @@ public class ServerProcessTest {
 			in.close();
 			
 			//clear file contents
-			FileOutputStream eraser = new FileOutputStream("test.txt");
+			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
 			eraser.write((new String()).getBytes());
 			eraser.close();
 		} catch (IOException e) {
@@ -67,11 +67,11 @@ public class ServerProcessTest {
 		
 		try {
 			//writer and reader for file
-			PrintWriter writer = new PrintWriter(new FileWriter("test.txt", true));
-			BufferedReader in = new BufferedReader(new FileReader("test.txt"));
+			PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", true));
+			BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
 
 			//command through server processor
-			processor.addLine("new jan", writer);
+			processor.addLine("username jan", writer);
 			String response;
 			while (true) {
 				//flush writer -> write message
@@ -83,6 +83,26 @@ public class ServerProcessTest {
 					break;
 				}
 			}
+		
+			processor.addLine("new jan", writer);
+			String response2;
+			while (true) {
+				//flush writer -> write message
+				writer.flush();
+				//read file
+				response2 = in.readLine();
+				//if something was written, break
+				if (response2 != null) {
+					break;
+				}
+			}
+			
+			assertTrue(response2.replaceAll("\\s+", "").equals("newjan0"));
+			
+			//clear file contents
+			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
+			eraser.write((new String()).getBytes());
+			eraser.close();
 		} catch (IOException e){
 			System.out.println(e.getMessage());
 			throw new RuntimeException();

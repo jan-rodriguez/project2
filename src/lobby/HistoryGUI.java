@@ -1,4 +1,4 @@
-package chat;
+package lobby;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.Timer;
+
+import chat.Conversation;
 /**
  * HistoryGUI pops up when user clicks on View History button in AllUsersGUI
  * <p>
