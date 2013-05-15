@@ -1,4 +1,4 @@
-package main.client;
+package client;
 
 import java.awt.Container;
 import java.awt.event.WindowEvent;

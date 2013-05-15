@@ -1,4 +1,4 @@
-package main.chat;
+package chat;
 
 import java.awt.Container;
 import java.awt.Dimension;

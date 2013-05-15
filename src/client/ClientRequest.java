@@ -1,4 +1,4 @@
-package main.client;
+package client;
 
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;

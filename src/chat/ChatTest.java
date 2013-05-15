@@ -1,4 +1,4 @@
-package main.chat;
+package chat;
 
 import static org.junit.Assert.*;
 
