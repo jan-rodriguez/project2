@@ -1,4 +1,4 @@
-package main;
+package server;
 
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -6,6 +6,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import chat.Chat;
+
 
 /**
  * ServerProcess is initialized when server is created. It handles the clients' requests

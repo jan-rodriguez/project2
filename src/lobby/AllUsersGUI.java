@@ -1,4 +1,4 @@
-package main;
+package lobby;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -25,6 +25,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
+
+import client.ClientSide;
+
 
 /**
  * First GUI clients see right after getting connection

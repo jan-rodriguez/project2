@@ -1,4 +1,4 @@
-package main;
+package chat;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -22,6 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
+
+import client.ClientSide;
+
 
 /**
  * GUI of a conversation. A conversation is created when 

@@ -1,8 +1,9 @@
-package main;
+package client;
 
 import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
 
 /**
  * ClientRequest handles requests made by the client to the server.
