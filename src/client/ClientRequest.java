@@ -36,6 +36,9 @@ public class ClientRequest extends Thread {
 			try {
 				action = queue.take();
 	        	writer.println(action);
+	        	//close ClientSide program
+				if (action.split("\\s+")[0].equals("disconnect"))
+					System.exit(0);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

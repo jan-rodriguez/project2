@@ -21,9 +21,9 @@ import chat.Chat;
  */
 public class ServerProcess extends Thread {
 	
-	private static ConcurrentHashMap<String, PrintWriter> hashUsers = new ConcurrentHashMap<String, PrintWriter>();
-	private static ConcurrentHashMap<String, Chat> hashChats = new ConcurrentHashMap<String, Chat>();
-	private static AtomicInteger chatNumber = new AtomicInteger();
+	private ConcurrentHashMap<String, PrintWriter> hashUsers = new ConcurrentHashMap<String, PrintWriter>();
+	private ConcurrentHashMap<String, Chat> hashChats = new ConcurrentHashMap<String, Chat>();
+	private AtomicInteger chatNumber = new AtomicInteger();
 	private final BlockingQueue<Action> queue;
 
 	/**
@@ -96,30 +96,34 @@ public class ServerProcess extends Thread {
 		        	chat.addHistory(tokens[1], message.toString());
 		        } else if (tokens[0].equals("invite")) {
 		        	// invite username+ chat
-		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
-		        	//iterate through users to be added
+		        	StringBuilder invitees = new StringBuilder("");
 		        	for (int i = 1; i < tokens.length-1; i++) {
-		        		String token = tokens[i].replace(",", "");
+		        		invitees.append(" " + tokens[i] + " ");
+		        	}
+		        	String[] inviteTokens = invitees.toString().split(",");
+ 		        	Chat chat = hashChats.get(tokens[tokens.length-1]);
+		        	//iterate through users to be added
+		        	for (String token: inviteTokens) {
 		        		//check if user connected
-		        		if (!hashUsers.containsKey(token))
+		        		if (!hashUsers.containsKey(token.trim()))
 		        			continue;
 		        		//check if user already in chat
-		        		if (chat.isMember(token)) 
+		        		if (chat.isMember(token.trim())) 
 		        			continue;
 		        		//add member
-		        		chat.addMember(token);
+		        		chat.addMember(token.trim());
 		        		//iterate through chat members
 		        		StringBuilder memberList = new StringBuilder("");
 		        		Collection<String> members = chat.getMembers();
 			        	for (String member: members) {
 			        		memberList.append(member + " ");
 			        		//notify all chat members of user's addition
-			        		if (!member.equals(token)) {
-				        		hashUsers.get(member).println("add " + token + " " + chat.getID());
+			        		if (!member.equals(token.trim())) {
+				        		hashUsers.get(member).println("add " + token.trim() + " " + chat.getID());
 			        		}
 			        	}
 			        	//notify user of new chat, current members and history
-			        	hashUsers.get(token).println("new " + memberList + " ? " + chat.getHistoryString() + " " + chat.getID());
+			        	hashUsers.get(token.trim()).println("new " + memberList + " ? " + chat.getHistoryString() + " " + chat.getID());
 		        	}
 		        } else if (tokens[0].equals("disconnect")) {
 		        	// disconnect username chat+

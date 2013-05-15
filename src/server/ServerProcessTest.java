@@ -1,7 +1,6 @@
 package server;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -23,7 +22,6 @@ public class ServerProcessTest {
 		processor.start();
 		
 		try {
-			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
 			//writer and reader for file
 			PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", false));
 			BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
@@ -46,11 +44,12 @@ public class ServerProcessTest {
 			//close writer
 			writer.close();
 			//assert message was the one we expected
-			assertTrue(response.replaceAll("\\s+", "").equals("startjangabo?0"));
+			assertTrue(response.replaceAll("\\s+", "").equals("startgabo?"));
 			//close reader
 			in.close();
 			
 			//clear file contents
+			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
 			eraser.write((new String()).getBytes());
 			eraser.close();
 		} catch (IOException e) {
@@ -67,7 +66,6 @@ public class ServerProcessTest {
 		processor.start();
 		
 		try {
-			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
 			//writer and reader for file
 			PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", false));
 			BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
@@ -83,7 +81,9 @@ public class ServerProcessTest {
 				}
 			}
 			//erasing file
+			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
 			eraser.write((new String()).getBytes());
+			eraser.close();
 		
 			processor.addLine("new jan", writer);
 			String response2;
@@ -102,87 +102,123 @@ public class ServerProcessTest {
 			//close reader
 			in.close();
 			writer.close();
+			
 			//clear file contents
-			eraser.write((new String()).getBytes());
-			eraser.close();
+			FileOutputStream eraser1 = new FileOutputStream("src/server/test.txt");
+			eraser1.write((new String()).getBytes());
+			eraser1.close();
 		
 		} catch (IOException e){
 			System.out.println(e.getMessage());
 			throw new RuntimeException();
 		}
 	}
+	
 	//timeout ensures we don't loop infinitely
-		@Test (timeout = 1000)
-		public void inviteChatTest() {
-			//start server processor
-			ServerProcess processor = new ServerProcess();
-			processor.start();
-			
-			try {
-				FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
-				//writer and reader for file
-				PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", false));
-				BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
+	@Test (timeout = 1000)
+	public void inviteChatTest() {
+		//start server processor
+		ServerProcess processor = new ServerProcess();
+		processor.start();
+		
+		try {
+			//writer and reader for file
+			PrintWriter writer = new PrintWriter(new FileWriter("src/server/test.txt", false));
+			BufferedReader in = new BufferedReader(new FileReader("src/server/test.txt"));
 
-				//command through server processor
-				processor.addLine("username jan", writer);
-				String response;
-				while (true) {
-					//flush writer -> write message
-					writer.flush();
-					//if something was written, break
-					if (in.readLine() != null) {
-						break;
-					}
+			//command through server processor
+			processor.addLine("username jon", writer);
+			String response;
+			while (true) {
+				//flush writer -> write message
+				writer.flush();
+				//if something was written, break
+				if (in.readLine() != null) {
+					break;
 				}
-				//erasing file
-				eraser.write((new String()).getBytes());
-
-				processor.addLine("new jan", writer);	
-				while (true) {
-					//flush writer -> write message
-					writer.flush();
-					//if something was written, break
-					if (in.readLine() != null) {
-						break;
-					}
-				}
-				//erasing file
-				eraser.write((new String()).getBytes());
-				processor.addLine("username gabo", writer);	
-				while (true) {
-					//flush writer -> write message
-					writer.flush();
-					//if something was written, break
-					if (in.readLine() != null) {
-						break;
-					}
-				}
-				eraser.write((new String()).getBytes());
-
-				processor.addLine("invite gabo", writer);
-				while (true) {
-					//flush writer -> write message
-					writer.flush();
-					response = in.readLine();
-					//if something was written, break
-					if (response != null) {
-						break;
-					}
-				}
-				
-				assertTrue(response.replaceAll("\\s+", "").equals("startjangabo?0"));
-				//closer reader
-				in.close();
-				writer.close();
-				//clear file contents
-				
-				eraser.write((new String()).getBytes());
-				eraser.close();
-				
-			} catch (IOException e){
-				System.out.println(e.getMessage());
-				throw new RuntimeException();
 			}
+			//erasing file
+			FileOutputStream eraser = new FileOutputStream("src/server/test.txt");
+			eraser.write((new String()).getBytes());
+			eraser.close();
+		
+			processor.addLine("new jon", writer);	
+			while (true) {
+				//flush writer -> write message
+				writer.flush();
+				
+				//if something was written, break
+				if (in.readLine() != null) {
+					break;
+				}
+			}			
+			while (true) {
+				//flush writer -> write message
+				writer.flush();
+				
+				//if something was written, break
+				if (in.readLine() != null) {
+					break;
+				}
+			}
+			//erasing file
+			FileOutputStream eraser1 = new FileOutputStream("src/server/test.txt");
+			eraser1.write((new String()).getBytes());
+			eraser1.close();
+			
+			PrintWriter chauWriter = new PrintWriter(new FileWriter("src/server/test.txt", false));
+
+			processor.addLine("username chau", chauWriter);	
+			while (true) {
+				//flush writer -> write message
+				chauWriter.flush();
+				//if something was written, break
+				if (in.readLine() != null) {
+					break;
+				}
+			}
+			
+			FileOutputStream eraser2 = new FileOutputStream("src/server/test.txt");
+			eraser2.write((new String()).getBytes());
+			eraser2.close();
+
+			processor.addLine("invite chau 0", writer);
+			while (true) {
+				//flush writer -> write message
+				writer.flush();
+				response = in.readLine();
+				//if something was written, break
+				if (response != null) {
+					break;
+				}
+			}
+//			
+//			assertTrue(response.replaceAll("\\s+", "").equals("addchau0"));
+//			
+//			while (true) {
+//				//flush writer -> write message
+//				chauWriter.flush();
+//				response = in.readLine();
+//				//if something was written, break
+//				if (response != null) {
+//					break;
+//				}
+//			}
+//	
+//			assertTrue(response.replaceAll("\\s+", "").equals("newjonchau?0"));
+//			
+//			//closer reader
+//			in.close();
+//			writer.close();
+//			//clear file contents
+//			FileOutputStream eraser3 = new FileOutputStream("src/server/test.txt");
+//			eraser3.write((new String()).getBytes());
+//			eraser3.close();
+			
+		} catch (IOException e){
+			System.out.println(e.getMessage());
+			throw new RuntimeException();
 		}
+	}
+	
 }
