@@ -1,8 +1,6 @@
 package main;
 
 import java.awt.Container;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
