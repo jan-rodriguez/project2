@@ -1,4 +1,4 @@
-package main;
+package main.client;
 
 import java.awt.Container;
 import java.awt.event.WindowEvent;
@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
+
 
 /**
  * GUI used in client selection of a username.

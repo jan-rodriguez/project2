@@ -1,4 +1,4 @@
-package main;
+package main.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +13,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import main.chat.Conversation;
+import main.chat.HistoryGUI;
+import main.lobby.AllUsersGUI;
 
 /**
  * ClientSide is the client program for the chat. It runs the connection GUI, then the

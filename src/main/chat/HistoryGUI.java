@@ -1,4 +1,4 @@
-package main;
+package main.chat;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -22,7 +22,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.Timer;
 /**
  * HistoryGUI pops up when user clicks on View History button in AllUsersGUI
- * 
+ * <p>
  * The GUI has a HashMap that maps String ChatNumber to a conversation
  * When a user selects a ChatNumber from a JList, the history of the 
  * corresponding conversation will show up in a text area.
@@ -33,7 +33,7 @@ import javax.swing.Timer;
  * if users reselect them. For example, if a user sees room 0, then room 1,
  * and back to room 0 again. If during that time room 0 is updated with new messages
  * then the new messages will show up when the user sees room 0 the second time. 
- *
+ * <p>
  * Components: 2 JLabels to show ChatNumber and history area
  * 			   1 JScrollPane that contains a JList. This JList stores ChatNumber
  * 			   1 JScrollPane that contains a JTextArea to show histories

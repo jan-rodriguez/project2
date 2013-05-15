@@ -1,4 +1,4 @@
-package tests;
+package main.chat;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import main.Chat;
 
 import org.junit.Test;
 

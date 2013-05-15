@@ -1,4 +1,4 @@
-package main;
+package main.server;
 
 import java.io.PrintWriter;
 
